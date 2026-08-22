@@ -49,14 +49,21 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Se comenta esta línea para evitar que el Coordinador pierda la sessión
+        /* Auth::login($user); */
+
+        // Redirigir al coordinador de vuelta con un mensaje de éxito
+        return redirect()->back()->with('status', 'Usuario con rol ('.$user->role.') creado exitosamente.');
 
         // 3. Redirigir al panel correspondiente según el rol con el que se registró
-        return match ($user->role) {
+
+        // TO DO ESTO SE COMENTA POR QUE NO SE QUIERE QUE EL COORDINADOR PIERDA LA SESIÓN AL CREAR UN USUARIO NUEVO
+        
+        /* return match ($user->role) {
             'Instructor' => redirect()->intended('/instructor/panel'),
             'Coordinador Académico' => redirect()->intended('/academico/panel'),
             'Coordinador Administrativo' => redirect()->intended('/administrativo/panel'),
             default => redirect()->intended('/dashboard'),
-        };
+        }; */
     }
 }

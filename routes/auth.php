@@ -57,3 +57,13 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
+
+
+// Agrupa la vista y el proceso de registro bajo los middleware de autenticación y coordinadores:
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [RegisteredUserController::class, 'store']);
+});
