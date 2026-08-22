@@ -13,7 +13,17 @@
         </div>
     </x-slot>
 
-    <div class="py-12" x-data="{ openModal: false, deleteUrl: '', userEmail: '' }">
+    <div class="py-12" x-data="{
+        openDeleteModal: false,
+        deleteUrl: '',
+        userEmail: '',
+        openEditModal: false,
+        editUrl: '',
+        editName: '',
+        editEmail: '',
+        editRole: '',
+        currentEmail: ''
+    }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if (session('status'))
@@ -23,9 +33,13 @@
                 </div>
             @endif
 
-            @if (session('error'))
+            @if ($errors->any())
                 <div class="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-900/50 dark:text-red-300">
-                    {{ session('error') }}
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>• {{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 
@@ -56,10 +70,25 @@
                                         {{ $user->role }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 flex gap-2">
+                                    <!-- Botón Editar -->
+                                    <button
+                                        @click="
+                                            openEditModal = true; 
+                                            editUrl = '{{ route('users.update', $user) }}';
+                                            editName = '{{ $user->name }}';
+                                            editEmail = '{{ $user->email }}';
+                                            editRole = '{{ $user->role }}';
+                                            currentEmail = '{{ $user->email }}';
+                                        "
+                                        class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded hover:bg-yellow-600 transition">
+                                        Editar
+                                    </button>
+
+                                    <!-- Botón Eliminar -->
                                     @if (auth()->id() !== $user->id)
                                         <button
-                                            @click="openModal = true; deleteUrl = '{{ route('users.destroy', $user) }}'; userEmail = '{{ $user->email }}'"
+                                            @click="openDeleteModal = true; deleteUrl = '{{ route('users.destroy', $user) }}'; userEmail = '{{ $user->email }}'"
                                             class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700 transition">
                                             Eliminar
                                         </button>
@@ -76,8 +105,65 @@
             </div>
         </div>
 
-        <!-- Modal de Confirmación -->
-        <div x-show="openModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        <!-- Modal de Edición -->
+        <div x-show="openEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            x-cloak>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar Usuario</h3>
+
+                <form :action="editUrl" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Nombre</label>
+                        <input type="text" name="name" x-model="editName" required
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Nuevo Correo</label>
+                        <input type="email" name="email" x-model="editEmail" required
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Rol</label>
+                        <select name="role" x-model="editRole" required
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                            <option value="Instructor">Instructor</option>
+                            <option value="Coordinador Académico">Coordinador Académico</option>
+                            <option value="Coordinador Administrativo">Coordinador Administrativo</option>
+                        </select>
+                    </div>
+
+                    <!-- Confirmación por correo actual -->
+                    <div class="border-t pt-3 mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            Para guardar los cambios, confirma escribiendo el <strong>correo actual</strong> (<span
+                                x-text="currentEmail" class="font-bold"></span>):
+                        </p>
+                        <input type="email" name="current_email_confirm" required
+                            placeholder="Escribe el correo actual aquí"
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" @click="openEditModal = false"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-yellow-500 text-white rounded-md text-xs font-semibold hover:bg-yellow-600">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de Eliminación -->
+        <div x-show="openDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
             x-cloak>
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Confirmar eliminación</h3>
@@ -91,14 +177,10 @@
                     @method('DELETE')
 
                     <input type="email" name="confirm_email" required placeholder="Escribe el correo aquí"
-                        class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 mb-4 text-sm">
-
-                    @error('confirm_email')
-                        <p class="text-red-500 text-xs mb-4">{{ $message }}</p>
-                    @enderror
+                        class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm mb-4">
 
                     <div class="flex justify-end gap-2">
-                        <button type="button" @click="openModal = false"
+                        <button type="button" @click="openDeleteModal = false"
                             class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
                             Cancelar
                         </button>
@@ -110,5 +192,6 @@
                 </form>
             </div>
         </div>
+
     </div>
 </x-app-layout>

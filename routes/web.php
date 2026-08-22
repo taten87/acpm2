@@ -18,6 +18,14 @@ Route::get('/dashboard', function () {
 
 // -------- ACESOS PARA LOS ROLES --------
 
+// Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores puedan 
+// ver la lista de usuarios. Y también para que solo los coordinadores puedan editar usuarios.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+    Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
 // Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores puedan ver la lista de usuarios.
 Route::middleware(['auth', 'can.create.users'])->group(function () {
     Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');

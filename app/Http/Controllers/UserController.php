@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -46,5 +47,36 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('status', 'Usuario eliminado correctamente.');
+    }
+
+
+    // ESTE MÉTODO ES PARA ACTUALIZAR LOS DATOS DE UN USUARIO, PERO ANTES DE ACTUALIZARLOS,
+    // SE PIDE QUE EL COORDINADOR CONFIRME EL CORREO ACTUAL DEL USUARIO. SI EL CORREO NO COINCIDE, 
+    // SE MUESTRA UN MENSAJE DE ERROR.
+    public function update(Request $request, User $user)
+    {
+        // Validar los campos nuevos y el correo actual de confirmación
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'role' => ['required', 'string', Rule::in(['Instructor', 'Coordinador Académico', 'Coordinador Administrativo'])],
+            'current_email_confirm' => ['required', 'email'],
+        ]);
+
+        // Verificar que el correo ingresado coincida con el correo ACTUAL del usuario en la BD
+        if ($request->current_email_confirm !== $user->email) {
+            return redirect()->back()->withErrors([
+                'current_email_confirm' => 'El correo de confirmación no coincide con el correo actual del usuario.'
+            ]);
+        }
+
+        // Actualizar los datos
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('users.index')->with('status', 'Usuario actualizado correctamente.');
     }
 }
