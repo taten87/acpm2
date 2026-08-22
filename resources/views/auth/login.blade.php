@@ -57,6 +57,11 @@
             <x-primary-button class="ms-3">
                 {{ __('Entrar') }}
             </x-primary-button>
+            
+            {{-- Este es el btn que hay que quitar --}}
+            <a href="register" class="text-blue-500 hover:text-blue-700">Registro</a>
+            {{-- Este es el btn que hay que quitar --}}
+
         </div>
     </form>
 </x-guest-layout>

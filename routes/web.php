@@ -11,6 +11,16 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// ----- RUTA TEMPORAL -----
+
+Route::get('register', function () {
+    return view('auth.register');
+});
+
+// FIN ----- RUTA TEMPORAL -----
+
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
