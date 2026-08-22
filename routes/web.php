@@ -23,6 +23,12 @@ Route::middleware(['auth', 'can.create.users'])->group(function () {
     Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
 });
 
+// Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores puedan eliminar usuarios.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
 // Rutas exclusivas para Instructores
 Route::middleware(['auth', 'role:Instructor'])->group(function () {
     Route::get('/instructor/panel', function () {
