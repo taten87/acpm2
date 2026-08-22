@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -16,6 +17,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores puedan ver la lista de usuarios.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+});
 
 // Rutas exclusivas para Instructores
 Route::middleware(['auth', 'role:Instructor'])->group(function () {
@@ -47,4 +53,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
