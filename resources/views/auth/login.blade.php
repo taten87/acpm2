@@ -23,14 +23,18 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <!-- Rol -->
+        <!-- Selección de Rol -->
         <div class="mt-4">
-            <x-input-label for="rol" :value="__('Rol')" />
-            <select id="rol" name="rol" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                <option value="instructor">Instructor</option>
-                <option value="academico">Coordinador Académico</option>
-                <option value="administrativo">Coordinador Administrativo</option>
+            <x-input-label for="role" value="Selecciona tu Rol para ingresar" />
+
+            <select name="role" id="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                <option value="" disabled selected>-- Elige un rol --</option>
+                <option value="Instructor" {{ old('role') == 'Instructor' ? 'selected' : '' }}>Instructor</option>
+                <option value="Coordinador Académico" {{ old('role') == 'Coordinador Académico' ? 'selected' : '' }}>Coordinador Académico</option>
+                <option value="Coordinador Administrativo" {{ old('role') == 'Coordinador Administrativo' ? 'selected' : '' }}>Coordinador Administrativo</option>
             </select>
+
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <!-- Remember Me -->
