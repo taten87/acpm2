@@ -5,7 +5,15 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ openDeleteModal: false, deleteUrl: '', selectedFicha: '' }">
+    <div class="py-12" x-data="{
+        openDeleteModal: false,
+        deleteUrl: '',
+        selectedFicha: '',
+        openEditModal: false,
+        editUrl: '',
+        editNumFicha: '',
+        currentNumFicha: ''
+    }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Mensaje de confirmación de éxito -->
@@ -70,7 +78,20 @@
                                 <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">
                                     {{ $ficha->numFicha }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 flex gap-2">
+                                    <!-- Botón Editar -->
+                                    <button
+                                        @click="
+                                            openEditModal = true; 
+                                            editUrl = '{{ route('fichas.update', $ficha) }}'; 
+                                            editNumFicha = '{{ $ficha->numFicha }}';
+                                            currentNumFicha = '{{ $ficha->numFicha }}';
+                                        "
+                                        class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded hover:bg-yellow-600 transition">
+                                        Editar
+                                    </button>
+
+                                    <!-- Botón Eliminar -->
                                     <button
                                         @click="
                                             openDeleteModal = true; 
@@ -97,6 +118,48 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Modal de Edición de Ficha -->
+        <div x-show="openEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            x-cloak>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar Ficha</h3>
+
+                <form :action="editUrl" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Nuevo Número de
+                            Ficha</label>
+                        <input type="number" name="numFicha" x-model="editNumFicha" required
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                    </div>
+
+                    <!-- Confirmación por número de ficha actual -->
+                    <div class="border-t pt-3 mb-4">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            Para aplicar los cambios, confirma escribiendo el <strong>número actual</strong> de la ficha
+                            (<span x-text="currentNumFicha" class="font-bold"></span>):
+                        </p>
+                        <input type="number" name="current_numFicha_confirm" required
+                            placeholder="Escribe el número actual aquí"
+                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm text-sm">
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" @click="openEditModal = false"
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
+                            Cancelar
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-yellow-500 text-white rounded-md text-xs font-semibold hover:bg-yellow-600">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Modal de Confirmación de Eliminación -->

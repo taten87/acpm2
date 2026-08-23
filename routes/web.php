@@ -19,6 +19,15 @@ Route::get('/dashboard', function () {
 
 // -------- ACESOS PARA LOS ROLES --------
 
+// Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores 
+// editar las fichas.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/fichas', [FichaController::class, 'index'])->name('fichas.index');
+    Route::post('/fichas', [FichaController::class, 'store'])->name('fichas.store');
+    Route::put('/fichas/{ficha}', [FichaController::class, 'update'])->name('fichas.update');
+    Route::delete('/fichas/{ficha}', [FichaController::class, 'destroy'])->name('fichas.destroy');
+});
+
 // Esto es para que solo los coordinadores puedan ver la lista de fichas y eliminar fichas.
 Route::middleware(['auth', 'can.create.users'])->group(function () {
     Route::get('/fichas', [FichaController::class, 'index'])->name('fichas.index');

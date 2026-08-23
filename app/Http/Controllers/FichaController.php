@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ficha;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class FichaController extends Controller
 {
@@ -53,5 +54,38 @@ class FichaController extends Controller
         $ficha->delete();
 
         return redirect()->route('fichas.index')->with('status', 'Ficha eliminada correctamente.');
+    }
+
+
+    // Este método es para que se puedan editar las fichas 
+    public function update(Request $request, Ficha $ficha)
+    {
+        // Validar el nuevo número de ficha y la confirmación
+        $request->validate([
+            'numFicha' => [
+                'required',
+                'numeric',
+                'integer',
+                Rule::unique('ficha', 'numFicha')->ignore($ficha->numFicha, 'numFicha')
+            ],
+            'current_numFicha_confirm' => ['required', 'numeric'],
+        ], [
+            'numFicha.required' => 'El número de ficha es obligatorio.',
+            'numFicha.unique' => 'Este número de ficha ya se encuentra registrado.',
+        ]);
+
+        // Verificar que el número de confirmación sea igual al número ACTUAL de la ficha
+        if ((int) $request->current_numFicha_confirm !== (int) $ficha->numFicha) {
+            return redirect()->back()->withErrors([
+                'current_numFicha_confirm' => 'El número de confirmación no coincide con el número actual de la ficha.'
+            ]);
+        }
+
+        // Actualizar el número de la ficha
+        $ficha->update([
+            'numFicha' => $request->numFicha,
+        ]);
+
+        return redirect()->route('fichas.index')->with('status', 'Ficha actualizada correctamente.');
     }
 }
