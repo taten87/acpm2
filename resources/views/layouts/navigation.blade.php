@@ -26,6 +26,14 @@
                 </x-nav-link>
             @endif
 
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS FICHAS --}}
+
+            @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+                <x-nav-link :href="route('fichas.index')" :active="request()->routeIs('fichas.index')">
+                    {{ __('Gestión de Fichas') }}
+                </x-nav-link>
+            @endif
+
             {{-- FIN - ESTO ES EL BTN PARA EL LISTADO DE LOS USUARIOS --}}
 
             <!-- Settings Dropdown -->

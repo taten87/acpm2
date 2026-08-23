@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FichaController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -17,6 +18,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Esto es para que solo los coordinadores puedan ver la lista de fichas y eliminar fichas.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/fichas', [FichaController::class, 'index'])->name('fichas.index');
+    Route::post('/fichas', [FichaController::class, 'store'])->name('fichas.store');
+    Route::delete('/fichas/{ficha}', [FichaController::class, 'destroy'])->name('fichas.destroy');
+});
+
+// Esto es para que solo los coordinadores puedan ver la lista de fichas y registrar nuevas fichas.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    Route::get('/fichas', [FichaController::class, 'index'])->name('fichas.index');
+    Route::post('/fichas', [FichaController::class, 'store'])->name('fichas.store');
+});
 
 // Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores puedan 
 // ver la lista de usuarios. Y también para que solo los coordinadores puedan editar usuarios.

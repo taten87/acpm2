@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Ficha;
+use Illuminate\Http\Request;
+
+class FichaController extends Controller
+{
+    // Muestra la vista con el formulario y la lista de fichas registradas
+    public function index()
+    {
+        // Aca se coloca que se orden por numFicha para que no saque error
+        $fichas = Ficha::orderBy('numFicha', 'desc')->paginate(10);
+        return view('fichas.index', compact('fichas'));
+    }
+
+    // Procesa el guardado de una nueva ficha
+    public function store(Request $request)
+    {
+        $request->validate([
+            'numFicha' => ['required', 'numeric', 'integer', 'unique:ficha,numFicha'],
+        ], [
+            'numFicha.required' => 'El número de ficha es obligatorio.',
+            'numFicha.numeric' => 'El número de ficha debe ser numérico.',
+            'numFicha.unique' => 'Esta ficha ya se encuentra registrada en el sistema.',
+        ]);
+
+        Ficha::create([
+            'numFicha' => $request->numFicha,
+        ]);
+
+        return redirect()->route('fichas.index')->with('status', 'Ficha guardada exitosamente.');
+    }
+
+    // Este método se encarga de eliminar una ficha, pero antes de eliminarla, 
+    // solicita al usuario que confirme el número de ficha que desea eliminar. 
+    // Esto es para evitar eliminaciones accidentales.
+    public function destroy(Request $request, Ficha $ficha)
+    {
+        // Validar que se haya enviado el número de ficha para la confirmación
+        $request->validate([
+            'confirm_numFicha' => ['required', 'numeric'],
+        ]);
+
+        // Verificar que el número ingresado coincida exactamente con la ficha
+        if ((int) $request->confirm_numFicha !== (int) $ficha->numFicha) {
+            return redirect()->back()->withErrors([
+                'confirm_numFicha' => 'El número ingresado no coincide con el número de ficha.'
+            ]);
+        }
+
+        $ficha->delete();
+
+        return redirect()->route('fichas.index')->with('status', 'Ficha eliminada correctamente.');
+    }
+}
