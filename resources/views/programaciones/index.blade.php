@@ -1,366 +1,348 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Programación Mensual') }}
+            {{ __('Planeación y Programación Mensual') }}
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{
-        openDeleteModal: false,
-        deleteUrl: '',
-        countdown: 5,
-        timer: null,
-    
+    <div class="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6" x-data="{
+        openCreateModal: false,
         openEditModal: false,
         editUrl: '',
-        editData: {},
-    
-        startDelete(url) {
-            this.deleteUrl = url;
-            this.openDeleteModal = true;
-            this.countdown = 5;
-            if (this.timer) clearInterval(this.timer);
-            this.timer = setInterval(() => {
-                if (this.countdown > 0) {
-                    this.countdown--;
-                } else {
-                    clearInterval(this.timer);
-                }
-            }, 1000);
-        },
-    
-        setEdit(url, item) {
-            this.editUrl = url;
-            this.editData = item;
-            this.openEditModal = true;
-        }
+        editData: {}
     }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <!-- Mensajes -->
-            @if (session('status'))
-                <div class="p-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-900/50 dark:text-green-300">
-                    {{ session('status') }}
+        <!-- 1. CABECERA CON DATOS DEL INSTRUCTOR Y MES -->
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-md border border-gray-300 dark:border-gray-700">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 text-center">
+                <div class="bg-white dark:bg-gray-900 p-3 rounded shadow-sm">
+                    <span class="text-xs font-semibold text-gray-500 uppercase block">Nombre del Instructor</span>
+                    <p class="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">
+                        {{ auth()->user()->name }}
+                    </p>
                 </div>
-            @endif
 
-            @if ($errors->any())
-                <div class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-900/50 dark:text-red-300">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>• {{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="bg-white dark:bg-gray-900 p-3 rounded shadow-sm">
+                    <span class="text-xs font-semibold text-gray-500 uppercase block">Documento de ID</span>
+                    <p class="font-bold text-gray-800 dark:text-gray-100 text-sm">
+                        {{ auth()->user()->documento ?? 'N/A' }}
+                    </p>
                 </div>
-            @endif
 
-            <!-- Formulario de Registro con Listas Desplegables -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-                    Registrar Programación
+                <div class="bg-white dark:bg-gray-900 p-3 rounded shadow-sm">
+                    <span class="text-xs font-semibold text-gray-500 uppercase block">Correo Institucional</span>
+                    <p class="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">
+                        {{ auth()->user()->email }}
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-gray-900 p-3 rounded shadow-sm">
+                    <span class="text-xs font-semibold text-gray-500 uppercase block">Número de Celular</span>
+                    <p class="font-bold text-gray-800 dark:text-gray-100 text-sm">
+                        {{ auth()->user()->telefono ?? 'N/A' }}
+                    </p>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-gray-900 p-3 rounded shadow-sm border-2 border-indigo-500 flex flex-col justify-center">
+                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase block">Mes
+                        Programado</span>
+                    <input type="month"
+                        class="w-full text-center border-none font-bold text-gray-800 dark:text-gray-100 p-0 focus:ring-0 text-sm bg-transparent"
+                        value="2026-08">
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÓN DE ACCIÓN CREAR -->
+        <div class="flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                Actividades Planeadas
+            </h3>
+            <button @click="openCreateModal = true"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-2">
+                + Agregar Registro a la Programación
+            </button>
+        </div>
+
+        <!-- 2. TABLA TIPO EXCEL / PLANTILLA SENA -->
+        <div
+            class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-x-auto border border-gray-300 dark:border-gray-700">
+            <table class="w-full text-xs text-center border-collapse">
+                <thead class="bg-gray-300 dark:bg-gray-900 text-gray-800 dark:text-gray-200 uppercase font-bold">
+                    <tr class="border-b border-gray-400 dark:border-gray-700">
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Ficha</th>
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Programa</th>
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Actividad de
+                            Proyecto</th>
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Competencia</th>
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Resultado</th>
+                        <th rowspan="2" class="p-2 border-r border-gray-400 dark:border-gray-700">Horas Ejecutadas
+                        </th>
+                        <th colspan="2" class="p-1 border-r border-b border-gray-400 dark:border-gray-700">Fecha</th>
+                        <th rowspan="2" class="p-2">Acciones</th>
+                    </tr>
+                    <tr class="border-b border-gray-400 dark:border-gray-700 bg-gray-200 dark:bg-gray-800">
+                        <th class="p-1 border-r border-gray-400 dark:border-gray-700">Inicio</th>
+                        <th class="p-1 border-r border-gray-400 dark:border-gray-700">Final</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-300 dark:divide-gray-700 bg-gray-50 dark:bg-gray-800">
+                    @forelse ($programaciones as $p)
+                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                            <td
+                                class="p-2 border-r border-gray-300 dark:border-gray-700 font-bold text-red-600 dark:text-red-400">
+                                {{ $p->numFicha }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 text-left">
+                                {{ $p->programa->nombre ?? 'N/A' }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 text-left">
+                                {{ Str::limit($p->actividadProyecto->descripcion ?? 'N/A', 35) }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 text-left">
+                                {{ Str::limit($p->competencia->nombre ?? 'N/A', 30) }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 text-left">
+                                {{ Str::limit($p->resultadoAprendizaje->nombre ?? 'N/A', 30) }}
+                            </td>
+                            <td
+                                class="p-2 border-r border-gray-300 dark:border-gray-700 font-bold text-indigo-600 dark:text-indigo-400">
+                                {{ $p->horas }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 whitespace-nowrap">
+                                {{ $p->fechaInicio }}
+                            </td>
+                            <td class="p-2 border-r border-gray-300 dark:border-gray-700 whitespace-nowrap">
+                                {{ $p->fechaFin }}
+                            </td>
+                            <td class="p-2 flex justify-center gap-2 items-center">
+                                <!-- Botón Editar -->
+                                <button
+                                    @click="
+                                        editUrl = '{{ route('programaciones.update', $p) }}';
+                                        editData = {{ json_encode($p) }};
+                                        openEditModal = true;
+                                    "
+                                    class="text-amber-500 hover:text-amber-700 font-bold p-1 transition" title="Editar">
+                                    ✎
+                                </button>
+
+                                <!-- Botón Eliminar -->
+                                <form action="{{ route('programaciones.destroy', $p) }}" method="POST"
+                                    onsubmit="return confirm('¿Eliminar este registro de la programación?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        class="text-red-600 hover:text-red-800 font-bold p-1 transition"
+                                        title="Eliminar">✕</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="p-4 text-center text-gray-500">
+                                No hay registros cargados para este mes. Haz clic en "Agregar Registro".
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. PIE DE TABLA CON TOTAL ACUMULADO DE HORAS -->
+        <div
+            class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-center items-center gap-4">
+            <div
+                class="bg-white dark:bg-gray-900 px-6 py-2 rounded font-bold text-gray-700 dark:text-gray-200 uppercase text-xs">
+                TOTAL HORAS MES
+            </div>
+            <div
+                class="bg-white dark:bg-gray-900 px-8 py-2 rounded font-extrabold text-indigo-600 dark:text-indigo-400 text-lg border-2 border-indigo-500">
+                {{ $programaciones->sum('horas') }} Hours
+            </div>
+        </div>
+
+        <!-- MODAL FORMULARIO DE INSERCIÓN -->
+        <div x-show="openCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            x-cloak>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-2xl w-full">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Añadir Bloque a Programación Mensual
                 </h3>
 
-                <form method="POST" action="{{ route('programaciones.store') }}"
-                    class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form action="{{ route('programaciones.store') }}" method="POST"
+                    class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     @csrf
+                    <input type="hidden" name="idUsuario" value="{{ auth()->user()->id }}">
 
                     <div>
-                        <x-input-label for="idUsuario" value="Instructor / Usuario" />
-                        <select id="idUsuario" name="idUsuario" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Instructor</option>
-                            @foreach ($usuarios as $user)
-                                <option value="{{ $user->id }}"
-                                    {{ old('idUsuario') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                        <label class="block font-semibold">Ficha</label>
+                        <select name="numFicha" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            <option value="">Seleccionar Ficha</option>
+                            @foreach ($fichas as $f)
+                                <option value="{{ $f->numFicha }}">{{ $f->numFicha }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <x-input-label for="numFicha" value="Número de Ficha" />
-                        <select id="numFicha" name="numFicha" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Ficha</option>
-                            @foreach ($fichas as $ficha)
-                                <option value="{{ $ficha->numFicha }}"
-                                    {{ old('numFicha') == $ficha->numFicha ? 'selected' : '' }}>{{ $ficha->numFicha }}
-                                </option>
+                        <label class="block font-semibold">Programa</label>
+                        <select name="codPrograma" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            <option value="">Seleccionar Programa</option>
+                            @foreach ($programas as $pr)
+                                <option value="{{ $pr->codPrograma }}">{{ $pr->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <x-input-label for="codPrograma" value="Programa de Formación" />
-                        <select id="codPrograma" name="codPrograma" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Programa</option>
-                            @foreach ($programas as $prog)
-                                <option value="{{ $prog->codPrograma }}"
-                                    {{ old('codPrograma') == $prog->codPrograma ? 'selected' : '' }}>
-                                    {{ $prog->nombre }} ({{ $prog->version }})</option>
+                        <label class="block font-semibold">Competencia</label>
+                        <select name="idCompetencia" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            <option value="">Seleccionar Competencia</option>
+                            @foreach ($competencias as $c)
+                                <option value="{{ $c->idCompetencia }}">{{ $c->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <x-input-label for="idCompetencia" value="Competencia" />
-                        <select id="idCompetencia" name="idCompetencia" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Competencia</option>
-                            @foreach ($competencias as $comp)
-                                <option value="{{ $comp->idCompetencia }}"
-                                    {{ old('idCompetencia') == $comp->idCompetencia ? 'selected' : '' }}>
-                                    {{ $comp->nombre }}</option>
+                        <label class="block font-semibold">Resultado de Aprendizaje</label>
+                        <select name="idResultadoAprendizaje" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            <option value="">Seleccionar Resultado</option>
+                            @foreach ($resultados as $r)
+                                <option value="{{ $r->idResultadoAprendizaje }}">{{ $r->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block font-semibold">Actividad de Proyecto</label>
+                        <select name="idActividadProyecto" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            <option value="">Seleccionar Actividad</option>
+                            @foreach ($actividades as $a)
+                                <option value="{{ $a->idActividadProyecto }}">{{ $a->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <x-input-label for="idResultadoAprendizaje" value="Resultado de Aprendizaje" />
-                        <select id="idResultadoAprendizaje" name="idResultadoAprendizaje" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Resultado</option>
-                            @foreach ($resultados as $res)
-                                <option value="{{ $res->idResultadoAprendizaje }}"
-                                    {{ old('idResultadoAprendizaje') == $res->idResultadoAprendizaje ? 'selected' : '' }}>
-                                    {{ $res->nombre }}</option>
-                            @endforeach
-                        </select>
+                        <label class="block font-semibold">Horas del Bloque</label>
+                        <input type="number" name="horas" min="1" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
                     <div>
-                        <x-input-label for="idActividadProyecto" value="Actividad de Proyecto" />
-                        <select id="idActividadProyecto" name="idActividadProyecto" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            <option value="">Seleccione Actividad</option>
-                            @foreach ($actividades as $act)
-                                <option value="{{ $act->idActividadProyecto }}"
-                                    {{ old('idActividadProyecto') == $act->idActividadProyecto ? 'selected' : '' }}>
-                                    {{ Str::limit($act->descripcion, 40) }}</option>
-                            @endforeach
-                        </select>
+                        <label class="block font-semibold">Fecha Inicio</label>
+                        <input type="date" name="fechaInicio" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
                     <div>
-                        <x-input-label for="horas" value="Horas" />
-                        <x-text-input id="horas" class="block mt-1 w-full" type="number" name="horas"
-                            :value="old('horas')" min="1" required />
+                        <label class="block font-semibold">Fecha Fin</label>
+                        <input type="date" name="fechaFin" required
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
-                    <div>
-                        <x-input-label for="fechaInicio" value="Fecha de Inicio" />
-                        <x-text-input id="fechaInicio" class="block mt-1 w-full" type="date" name="fechaInicio"
-                            :value="old('fechaInicio')" required />
-                    </div>
-
-                    <div>
-                        <x-input-label for="fechaFin" value="Fecha de Fin" />
-                        <x-text-input id="fechaFin" class="block mt-1 w-full" type="date" name="fechaFin"
-                            :value="old('fechaFin')" required />
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <x-primary-button>
-                            {{ __('Guardar Programación') }}
-                        </x-primary-button>
+                    <div class="md:col-span-2 flex justify-end gap-2 mt-4">
+                        <button type="button" @click="openCreateModal = false"
+                            class="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded font-bold">Guardar en
+                            Programación</button>
                     </div>
                 </form>
             </div>
-
-            <!-- Listado -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-                    Programaciones Mensuales Registradas
-                </h3>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-4 py-3">Instructor</th>
-                                <th scope="col" class="px-4 py-3">Ficha</th>
-                                <th scope="col" class="px-4 py-3">Programa</th>
-                                <th scope="col" class="px-4 py-3">Competencia</th>
-                                <th scope="col" class="px-4 py-3">Horas</th>
-                                <th scope="col" class="px-4 py-3">Fechas</th>
-                                <th scope="col" class="px-4 py-3">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($programaciones as $p)
-                                <tr
-                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">
-                                        {{ $p->usuario->name ?? 'N/A' }}</td>
-                                    <td class="px-4 py-3 text-gray-900 dark:text-white">{{ $p->numFicha }}</td>
-                                    <td class="px-4 py-3 text-gray-900 dark:text-white">
-                                        {{ $p->programa->nombre ?? 'N/A' }}</td>
-                                    <td class="px-4 py-3 text-gray-900 dark:text-white">
-                                        {{ Str::limit($p->competencia->nombre ?? 'N/A', 30) }}</td>
-                                    <td class="px-4 py-3 text-gray-900 dark:text-white">{{ $p->horas }}h</td>
-                                    <td class="px-4 py-3 text-xs text-gray-900 dark:text-white">{{ $p->fechaInicio }} /
-                                        {{ $p->fechaFin }}</td>
-                                    <td class="px-4 py-3 flex gap-2">
-                                        <button
-                                            @click="setEdit('{{ route('programaciones.update', $p) }}', {{ json_encode($p) }})"
-                                            class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded hover:bg-yellow-600 transition">
-                                            Editar
-                                        </button>
-
-                                        <button @click="startDelete('{{ route('programaciones.destroy', $p) }}')"
-                                            class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700 transition">
-                                            Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                                        No hay programaciones mensuales registradas.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-4">
-                    {{ $programaciones->links() }}
-                </div>
-            </div>
-
         </div>
 
-        <!-- Modal Editar -->
+        <!-- MODAL FORMULARIO DE EDICIÓN -->
         <div x-show="openEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
             x-cloak>
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-2xl w-full">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar Programación Mensual</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar Registro de Programación</h3>
 
-                <form :action="editUrl" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form :action="editUrl" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="idUsuario" :value="editData.idUsuario">
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Instructor</label>
-                        <select name="idUsuario" x-model="editData.idUsuario" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($usuarios as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Ficha</label>
+                        <label class="block font-semibold">Ficha</label>
                         <select name="numFicha" x-model="editData.numFicha" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($fichas as $ficha)
-                                <option value="{{ $ficha->numFicha }}">{{ $ficha->numFicha }}</option>
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            @foreach ($fichas as $f)
+                                <option value="{{ $f->numFicha }}">{{ $f->numFicha }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Programa</label>
+                        <label class="block font-semibold">Programa</label>
                         <select name="codPrograma" x-model="editData.codPrograma" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($programas as $prog)
-                                <option value="{{ $prog->codPrograma }}">{{ $prog->nombre }}</option>
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            @foreach ($programas as $pr)
+                                <option value="{{ $pr->codPrograma }}">{{ $pr->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Competencia</label>
+                        <label class="block font-semibold">Competencia</label>
                         <select name="idCompetencia" x-model="editData.idCompetencia" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($competencias as $comp)
-                                <option value="{{ $comp->idCompetencia }}">{{ $comp->nombre }}</option>
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            @foreach ($competencias as $c)
+                                <option value="{{ $c->idCompetencia }}">{{ $c->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Resultado
-                            Aprendizaje</label>
+                        <label class="block font-semibold">Resultado de Aprendizaje</label>
                         <select name="idResultadoAprendizaje" x-model="editData.idResultadoAprendizaje" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($resultados as $res)
-                                <option value="{{ $res->idResultadoAprendizaje }}">{{ $res->nombre }}</option>
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            @foreach ($resultados as $r)
+                                <option value="{{ $r->idResultadoAprendizaje }}">{{ $r->nombre }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Actividad
-                            Proyecto</label>
+                    <div class="md:col-span-2">
+                        <label class="block font-semibold">Actividad de Proyecto</label>
                         <select name="idActividadProyecto" x-model="editData.idActividadProyecto" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
-                            @foreach ($actividades as $act)
-                                <option value="{{ $act->idActividadProyecto }}">
-                                    {{ Str::limit($act->descripcion, 30) }}</option>
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
+                            @foreach ($actividades as $a)
+                                <option value="{{ $a->idActividadProyecto }}">{{ $a->descripcion }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Horas</label>
+                        <label class="block font-semibold">Horas del Bloque</label>
                         <input type="number" name="horas" x-model="editData.horas" min="1" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Fecha Inicio</label>
+                        <label class="block font-semibold">Fecha Inicio</label>
                         <input type="date" name="fechaInicio" x-model="editData.fechaInicio" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300">Fecha Fin</label>
+                        <label class="block font-semibold">Fecha Fin</label>
                         <input type="date" name="fechaFin" x-model="editData.fechaFin" required
-                            class="w-full mt-1 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
+                            class="w-full mt-1 rounded-md dark:bg-gray-900 border-gray-300 text-xs">
                     </div>
 
-                    <div class="md:col-span-2 flex justify-end gap-2 mt-2">
+                    <div class="md:col-span-2 flex justify-end gap-2 mt-4">
                         <button type="button" @click="openEditModal = false"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
-                            Cancelar
-                        </button>
+                            class="px-4 py-2 bg-gray-400 text-white rounded">Cancelar</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-yellow-500 text-white rounded-md text-xs font-semibold hover:bg-yellow-600">
-                            Guardar Cambios
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal Eliminar con Conteo de 5 segundos -->
-        <div x-show="openDeleteModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" x-cloak>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-                <h3 class="text-lg font-bold text-red-600 dark:text-red-400 mb-2">¿Eliminar esta programación?</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Esta acción no se puede deshacer.</p>
-
-                <form :action="deleteUrl" method="POST">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="flex justify-end gap-2">
-                        <button type="button" @click="openDeleteModal = false; if(timer) clearInterval(timer);"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
-                            Cancelar
-                        </button>
-
-                        <button type="submit" :disabled="countdown > 0"
-                            :class="countdown > 0 ? 'opacity-50 cursor-not-allowed bg-red-400' : 'bg-red-600 hover:bg-red-700'"
-                            class="px-4 py-2 text-white rounded-md text-xs font-semibold transition flex items-center gap-1">
-                            <span>Sí, eliminar</span>
-                            <template x-if="countdown > 0">
-                                <span x-text="'(' + countdown + 's)'"></span>
-                            </template>
-                        </button>
+                            class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold">Actualizar
+                            Cambios</button>
                     </div>
                 </form>
             </div>
