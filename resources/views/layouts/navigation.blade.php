@@ -18,6 +18,12 @@
                 </div>
             </div>
 
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS PROGRAMACIONES MENSUALES --}}
+
+            <x-nav-link :href="route('programaciones.index')" :active="request()->routeIs('programaciones.index')">
+                {{ __('Programaciones') }}
+            </x-nav-link>
+
             {{-- ESTO ES EL BTN PARA EL LISTADO DE LOS USUARIOS --}}
 
             @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))

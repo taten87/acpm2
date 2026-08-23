@@ -8,6 +8,7 @@ use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\ActividadProyectoController;
 use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\ResultadoAprendizajeController;
+use App\Http\Controllers\ProgramacionMensualController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -20,6 +21,16 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Rutas protegidas para usuarios autenticados, instructores también
+// pueden acceder a estas rutas.
+Route::middleware(['auth'])->group(function () {
+    // Rutas para Programación Mensual (Permitido para todos los roles)
+    Route::get('/programaciones-mensuales', [ProgramacionMensualController::class, 'index'])->name('programaciones.index');
+    Route::post('/programaciones-mensuales', [ProgramacionMensualController::class, 'store'])->name('programaciones.store');
+    Route::put('/programaciones-mensuales/{programacion}', [ProgramacionMensualController::class, 'update'])->name('programaciones.update');
+    Route::delete('/programaciones-mensuales/{programacion}', [ProgramacionMensualController::class, 'destroy'])->name('programaciones.destroy');
+});
 
 // -------- ACESOS PARA LOS ROLES --------
 
