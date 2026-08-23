@@ -7,6 +7,7 @@ use App\Http\Controllers\FichaController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\ActividadProyectoController;
 use App\Http\Controllers\CompetenciaController;
+use App\Http\Controllers\ResultadoAprendizajeController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -21,6 +22,18 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Rutas protegidas solo para coordinadores, 
+// esto es para que solo los coordinadores puedan crear,
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    // Rutas anteriores...
+
+    // Rutas para Resultado de Aprendizaje
+    Route::get('/resultados-aprendizaje', [ResultadoAprendizajeController::class, 'index'])->name('resultados.index');
+    Route::post('/resultados-aprendizaje', [ResultadoAprendizajeController::class, 'store'])->name('resultados.store');
+    Route::put('/resultados-aprendizaje/{resultado}', [ResultadoAprendizajeController::class, 'update'])->name('resultados.update');
+    Route::delete('/resultados-aprendizaje/{resultado}', [ResultadoAprendizajeController::class, 'destroy'])->name('resultados.destroy');
+});
 
 // Rutas protegidas solo para coordinadores, 
 // esto es para que solo los coordinadores puedan crear,

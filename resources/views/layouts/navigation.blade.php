@@ -50,6 +50,14 @@
                 </x-nav-link>
             @endif
 
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LOS RESULTADOS DE APRENDIZAJE --}}
+
+            @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+                <x-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.index')">
+                    {{ __('Resultados de Aprendizaje') }}
+                </x-nav-link>
+            @endif
+
             {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS ACTIVIDADES DE PROYECTO --}}
 
             @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
