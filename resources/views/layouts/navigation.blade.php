@@ -42,6 +42,14 @@
                 </x-nav-link>
             @endif
 
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS ACTIVIDADES DE PROYECTO --}}
+
+            @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+                <x-nav-link :href="route('actividades.index')" :active="request()->routeIs('actividades.index')">
+                    {{ __('Actividades de Proyecto') }}
+                </x-nav-link>
+            @endif
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

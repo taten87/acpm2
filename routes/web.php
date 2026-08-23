@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FichaController;
 use App\Http\Controllers\ProgramaController;
+use App\Http\Controllers\ActividadProyectoController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Rutas protegidas solo para coordinadores, 
+// esto es para que solo los coordinadores puedan crear, 
+// editar y eliminar actividades de proyecto.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    // Rutas anteriores...
+
+    // Rutas para Actividades de Proyecto
+    Route::get('/actividades-proyecto', [ActividadProyectoController::class, 'index'])->name('actividades.index');
+    Route::post('/actividades-proyecto', [ActividadProyectoController::class, 'store'])->name('actividades.store');
+    Route::put('/actividades-proyecto/{actividad}', [ActividadProyectoController::class, 'update'])->name('actividades.update');
+    Route::delete('/actividades-proyecto/{actividad}', [ActividadProyectoController::class, 'destroy'])->name('actividades.destroy');
+});
 
 // Rutas protegidas solo para coordinadores, 
 // esto es para que solo los coordinadores puedan crear, 
