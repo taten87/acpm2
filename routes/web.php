@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FichaController;
+use App\Http\Controllers\ProgramaController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -18,6 +19,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Rutas protegidas solo para coordinadores, 
+// esto es para que solo los coordinadores puedan crear, 
+// editar y eliminar programas.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    // Rutas para Fichas...
+
+    // Rutas para Programas
+    Route::get('/programas', [ProgramaController::class, 'index'])->name('programas.index');
+    Route::post('/programas', [ProgramaController::class, 'store'])->name('programas.store');
+    Route::put('/programas/{programa}', [ProgramaController::class, 'update'])->name('programas.update');
+    Route::delete('/programas/{programa}', [ProgramaController::class, 'destroy'])->name('programas.destroy');
+});
 
 // Rutas protegidas solo para coordinadores, esto es para que solo los coordinadores 
 // editar las fichas.

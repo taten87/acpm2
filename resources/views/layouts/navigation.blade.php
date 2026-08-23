@@ -34,7 +34,13 @@
                 </x-nav-link>
             @endif
 
-            {{-- FIN - ESTO ES EL BTN PARA EL LISTADO DE LOS USUARIOS --}}
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LOS PROGRAMAS --}}
+
+            @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+                <x-nav-link :href="route('programas.index')" :active="request()->routeIs('programas.index')">
+                    {{ __('Gestión de Programas') }}
+                </x-nav-link>
+            @endif
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
