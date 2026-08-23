@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FichaController;
 use App\Http\Controllers\ProgramaController;
 use App\Http\Controllers\ActividadProyectoController;
+use App\Http\Controllers\CompetenciaController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -20,6 +21,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // -------- ACESOS PARA LOS ROLES --------
+
+// Rutas protegidas solo para coordinadores, 
+// esto es para que solo los coordinadores puedan crear,
+// editar y eliminar competencias.
+Route::middleware(['auth', 'can.create.users'])->group(function () {
+    // Rutas anteriores...
+
+    // Rutas para Competencias
+    Route::get('/competencias', [CompetenciaController::class, 'index'])->name('competencias.index');
+    Route::post('/competencias', [CompetenciaController::class, 'store'])->name('competencias.store');
+    Route::put('/competencias/{competencia}', [CompetenciaController::class, 'update'])->name('competencias.update');
+    Route::delete('/competencias/{competencia}', [CompetenciaController::class, 'destroy'])->name('competencias.destroy');
+});
 
 // Rutas protegidas solo para coordinadores, 
 // esto es para que solo los coordinadores puedan crear, 

@@ -42,6 +42,14 @@
                 </x-nav-link>
             @endif
 
+            {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS COMPETENCIAS --}}
+
+            @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+                <x-nav-link :href="route('competencias.index')" :active="request()->routeIs('competencias.index')">
+                    {{ __('Competencias') }}
+                </x-nav-link>
+            @endif
+
             {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS ACTIVIDADES DE PROYECTO --}}
 
             @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
