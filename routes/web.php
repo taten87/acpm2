@@ -9,6 +9,7 @@ use App\Http\Controllers\ActividadProyectoController;
 use App\Http\Controllers\CompetenciaController;
 use App\Http\Controllers\ResultadoAprendizajeController;
 use App\Http\Controllers\ProgramacionMensualController;
+use App\Http\Controllers\ProgramacionController;
 
 /* Route::get('/', function () {
     return view('welcome');
@@ -25,6 +26,29 @@ Route::get('/dashboard', function () {
 // Rutas protegidas para usuarios autenticados, instructores también
 // pueden acceder a estas rutas.
 Route::middleware(['auth'])->group(function () {
+
+    // --- RUTAS DE PROGRAMACIÓN MENSUAL ---
+
+    // 1. Rutas principales para gestionar la cabecera de las programaciones (index, store, show, destroy)
+    Route::resource('programaciones', ProgramacionController::class)->only([
+        'index',
+        'store',
+        'show',
+        'destroy'
+    ]);
+
+    // 2. Rutas para gestionar los bloques/detalles dentro de una programación especifica
+    Route::post('programaciones/{programacion}/detalles', [ProgramacionController::class, 'storeDetalle'])
+        ->name('programaciones.detalles.store');
+
+    Route::put('programaciones/detalles/{detalle}', [ProgramacionController::class, 'updateDetalle'])
+        ->name('programaciones.detalles.update');
+
+    Route::delete('programaciones/detalles/{detalle}', [ProgramacionController::class, 'destroyDetalle'])
+        ->name('programaciones.detalles.destroy');
+
+
+
     // Rutas para Programación Mensual (Permitido para todos los roles)
     Route::get('/programaciones-mensuales', [ProgramacionMensualController::class, 'index'])->name('programaciones.index');
     Route::post('/programaciones-mensuales', [ProgramacionMensualController::class, 'store'])->name('programaciones.store');
