@@ -54,6 +54,13 @@
                                     class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded shadow">
                                     Eliminar
                                 </button>
+
+                                {{-- Botón Exportar Excel --}}
+                                <!-- Cambia 'programacion.exportar-excel' por 'programaciones.exportar' -->
+                                <a href="{{ route('programaciones.exportar', $p->id) }}"
+                                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded shadow inline-flex items-center gap-1">
+                                    📊 Exportar Excel
+                                </a>
                             </td>
                         </tr>
                     @empty

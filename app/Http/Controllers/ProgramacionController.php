@@ -11,8 +11,17 @@ use App\Models\ActividadProyecto;
 use App\Models\Ficha;
 use Illuminate\Http\Request;
 
+use App\Exports\ProgramacionExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class ProgramacionController extends Controller
 {
+    // Exportar a Excel
+    public function exportarExcel($id)
+    {
+        return Excel::download(new ProgramacionExport($id), 'programacion_' . $id . '.xlsx');
+    }
+
     /**
      * Muestra la lista general de todas las programaciones creadas por mes.
      */

@@ -15,6 +15,9 @@ use App\Http\Controllers\ProgramacionController;
     return view('welcome');
 }); */
 
+// Ruta para exportar la programación a Excel
+Route::get('/programaciones/{id}/exportar', [ProgramacionController::class, 'exportarExcel'])->name('programaciones.exportar');
+
 Route::get('/', function () {
     return redirect()->route('login');
 });

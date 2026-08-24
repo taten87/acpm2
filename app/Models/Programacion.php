@@ -24,7 +24,7 @@ class Programacion extends Model
     // Apuntamos a DetalleProgramacion
     public function detalles()
     {
-        return $this->hasMany(DetalleProgramacion::class, 'idProgramacion');
+        return $this->hasMany(DetalleProgramacion::class, 'idProgramacion', 'id');
     }
 
     public function user()
