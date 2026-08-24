@@ -48,7 +48,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('programaciones.detalles.destroy');
 
 
-
     // Rutas para Programación Mensual (Permitido para todos los roles)
     Route::get('/programaciones-mensuales', [ProgramacionMensualController::class, 'index'])->name('programaciones.index');
     Route::post('/programaciones-mensuales', [ProgramacionMensualController::class, 'store'])->name('programaciones.store');

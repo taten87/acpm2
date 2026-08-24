@@ -43,7 +43,7 @@
                             </td>
                             <td class="px-6 py-4 text-center flex justify-center gap-3">
                                 <!-- Botón Ver -->
-                                <a href="{{ route('programaciones.show', $p) }}"
+                                <a href="{{ route('programaciones.show', $p->id) }}"
                                     class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow">
                                     Ver / Gestionar Ficha 👁️
                                 </a>

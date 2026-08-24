@@ -36,7 +36,6 @@ class ProgramacionController extends Controller
             'mes_anio' => 'required|string',
         ]);
 
-        // Buscar o crear pasando AMBOS campos obligatorios
         $programacion = Programacion::firstOrCreate(
             [
                 'idUsuario' => auth()->id(),
@@ -44,20 +43,30 @@ class ProgramacionController extends Controller
             ]
         );
 
-        return redirect()->route('programaciones.show', $programacion)
+        // Pasamos el ID explícito para evitar problemas de binding
+        return redirect()->route('programaciones.show', $programacion->id)
             ->with('success', 'Programación procesada correctamente.');
     }
 
     /**
      * Muestra la plantilla/ficha detallada de una programación en específico.
      */
-    public function show(Programacion $programacion)
+    public function show($id)
     {
+        // Cargar manualmente el registro de la base de datos
+        $programacion = Programacion::findOrFail($id);
+
+        // Si por alguna razón histórica no tiene idUsuario, se le asigna el del usuario actual
+        if (is_null($programacion->idUsuario)) {
+            $programacion->update(['idUsuario' => auth()->id()]);
+        }
+
+        // Validar propiedad usando tipos enteros
         if ((int) $programacion->idUsuario !== (int) auth()->id()) {
             abort(403, 'Acceso no autorizado a esta programación.');
         }
 
-        // Cargamos relaciones desde detalles
+        // Cargar las relaciones del modelo hijo
         $programacion->load([
             'detalles.programa',
             'detalles.competencia',
