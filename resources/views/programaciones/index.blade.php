@@ -23,9 +23,8 @@
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                     <tr>
-                        <th class="px-6 py-3 text-left">Instructor</th>
                         <th class="px-6 py-3">Mes Programado</th>
-                        <th class="px-6 py-3">Instructor</th>
+                        <th class="px-6 py-3">Instructor / Responsable</th>
                         <th class="px-6 py-3 text-center">Total Horas Acumuladas</th>
                         <th class="px-6 py-3 text-center">Acciones</th>
                     </tr>
@@ -33,9 +32,6 @@
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($programaciones as $p)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                            <td class="px-6 py-4">
-                                {{ $p->user->name ?? 'Sin asignar' }}
-                            </td>
                             <td class="px-6 py-4 font-bold text-gray-900 dark:text-white uppercase">
                                 {{ $p->mes_anio }}
                             </td>
@@ -49,7 +45,7 @@
                                 <!-- Botón Ver -->
                                 <a href="{{ route('programaciones.show', $p->id) }}"
                                     class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow">
-                                    Ver / Gestionar Ficha 👁️
+                                    Gestionar
                                 </a>
 
                                 <!-- Botón Eliminar con Fetch Naitvo -->

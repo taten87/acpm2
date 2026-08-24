@@ -110,13 +110,13 @@
                             <td class="p-2 flex justify-center gap-2 items-center">
                                 <button
                                     @click="editUrl = '{{ route('programaciones.detalles.update', $d) }}'; editData = {{ json_encode($d) }}; openEditModal = true;"
-                                    class="text-amber-500 hover:text-amber-700 font-bold p-1">✎</button>
+                                    class="text-amber-500 hover:text-amber-700 font-bold p-1">Editar</button>
                                 <form action="{{ route('programaciones.detalles.destroy', $d) }}" method="POST"
                                     onsubmit="return confirm('¿Eliminar registro?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="text-red-600 hover:text-red-800 font-bold p-1">✕</button>
+                                        class="text-red-600 hover:text-red-800 font-bold p-1">Eliminar</button>
                                 </form>
                             </td>
                         </tr>
