@@ -18,11 +18,23 @@ class ProgramacionController extends Controller
      */
     public function index()
     {
-        $programaciones = Programacion::with('user')
-            ->withSum('detalles as total_horas', 'horas')
-            ->where('idUsuario', auth()->id())
-            ->orderBy('mes_anio', 'desc')
-            ->get();
+        $user = auth()->user();
+
+        // Verificamos si el usuario tiene rol de coordinador
+        // (Ajusta la condición si usas Spatie con $user->hasRole('Coordinador...') o similar)
+        $esCoordinador = in_array($user->role, ['Coordinador Académico', 'Coordinador Administrativo']);
+
+        if ($esCoordinador) {
+            // El coordinador ve todas las programaciones junto con la información del usuario
+            $programaciones = Programacion::with('user')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+            // El instructor solo ve las suyas
+            $programaciones = Programacion::where('idUsuario', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         return view('programaciones.index', compact('programaciones'));
     }
@@ -53,20 +65,16 @@ class ProgramacionController extends Controller
      */
     public function show($id)
     {
-        // Cargar manualmente el registro de la base de datos
         $programacion = Programacion::findOrFail($id);
+        $user = auth()->user();
 
-        // Si por alguna razón histórica no tiene idUsuario, se le asigna el del usuario actual
-        if (is_null($programacion->idUsuario)) {
-            $programacion->update(['idUsuario' => auth()->id()]);
-        }
+        $esCoordinador = in_array($user->role, ['Coordinador Académico', 'Coordinador Administrativo']);
 
-        // Validar propiedad usando tipos enteros
-        if ((int) $programacion->idUsuario !== (int) auth()->id()) {
+        // Si NO es coordinador Y tampoco es el dueño del registro, bloqueamos
+        if (!$esCoordinador && (int) $programacion->idUsuario !== (int) $user->id) {
             abort(403, 'Acceso no autorizado a esta programación.');
         }
 
-        // Cargar las relaciones del modelo hijo
         $programacion->load([
             'detalles.programa',
             'detalles.competencia',
@@ -151,18 +159,17 @@ class ProgramacionController extends Controller
 
     public function destroy($id)
     {
-        // Buscamos manualmente la programación en la BD usando su ID
         $programacion = Programacion::find($id);
 
         if (!$programacion) {
-            return response()->json([
-                'success' => false,
-                'message' => 'La programación no existe.'
-            ], 404);
+            return response()->json(['success' => false, 'message' => 'La programación no existe.'], 404);
         }
 
-        // Validación de seguridad limpia
-        if ((int) $programacion->idUsuario !== (int) auth()->id()) {
+        $user = auth()->user();
+        $esCoordinador = in_array($user->role, ['Coordinador Académico', 'Coordinador Administrativo']);
+
+        // Permite eliminar si es el dueño O si es coordinador
+        if (!$esCoordinador && (int) $programacion->idUsuario !== (int) $user->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'No tienes permisos para eliminar esta programación.'
@@ -170,22 +177,13 @@ class ProgramacionController extends Controller
         }
 
         try {
-            // Borrar los detalles vinculados
             $programacion->detalles()->delete();
-
-            // Borrar la cabecera
             $programacion->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Programación eliminada con éxito.'
-            ], 200);
+            return response()->json(['success' => true, 'message' => 'Programación eliminada con éxito.'], 200);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al eliminar en la base de datos: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => 'Error al eliminar en la BD.'], 500);
         }
     }
 }
