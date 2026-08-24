@@ -15,15 +15,15 @@
         </div>
 
 
-        {{-- Este el botón de registro de nuevos usuarios --}}
-        @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
+        {{-- TODO: Eliminar este botón de registro de nuevos usuarios --}}
+        {{-- @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
             <div class="mb-6 flex justify-end">
                 <a href="{{ route('register') }}"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
                     + Registrar Nuevo Usuario
                 </a>
             </div>
-        @endif
+        @endif --}}
 
         
     </div>

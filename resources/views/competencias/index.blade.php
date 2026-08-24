@@ -1,30 +1,30 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 leading-tight">
             {{ __('Gestión de Competencias') }}
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{
+    <div class="py-12 min-h-screen bg-slate-950 text-slate-100" x-data="{
         openDeleteModal: false,
         deleteUrl: '',
         selectedNombre: '',
         countdown: 5,
         timer: null,
-    
+
         openEditModal: false,
         editUrl: '',
         editNombre: '',
         editNumHoras: '',
-    
+
         startDelete(url, nombre) {
             this.deleteUrl = url;
             this.selectedNombre = nombre;
             this.openDeleteModal = true;
             this.countdown = 5;
-    
+
             if (this.timer) clearInterval(this.timer);
-    
+
             this.timer = setInterval(() => {
                 if (this.countdown > 0) {
                     this.countdown--;
@@ -36,107 +36,120 @@
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <!-- Mensajes de Estado y Error -->
+            <!-- Mensaje de confirmación de éxito -->
             @if (session('status'))
-                <div class="p-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-900/50 dark:text-green-300">
-                    {{ session('status') }}
+                <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm backdrop-blur-md flex items-center gap-3">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>{{ session('status') }}</span>
                 </div>
             @endif
 
+            <!-- Mensajes de errores de validación -->
             @if ($errors->any())
-                <div class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-900/50 dark:text-red-300">
-                    <ul>
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm backdrop-blur-md">
+                    <ul class="space-y-1">
                         @foreach ($errors->all() as $error)
-                            <li>• {{ $error }}</li>
+                            <li class="flex items-center gap-2">
+                                <span class="text-rose-500">•</span>
+                                <span>{{ $error }}</span>
+                            </li>
                         @endforeach
                     </ul>
                 </div>
             @endif
 
-            <!-- Formulario de Registro -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+            <!-- Formulario de Registro de Competencia -->
+            <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                <div class="absolute -top-12 -left-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <h3 class="text-lg font-semibold text-slate-100 mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Registrar Nueva Competencia
                 </h3>
 
-                <form method="POST" action="{{ route('competencias.store') }}"
-                    class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form method="POST" action="{{ route('competencias.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @csrf
 
                     <div class="md:col-span-2">
-                        <x-input-label for="nombre" value="Nombre de la Competencia" />
-                        <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre"
-                            :value="old('nombre')" required placeholder="Ej. Programar la solución de software..." />
+                        <label for="nombre" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nombre de la Competencia</label>
+                        <input id="nombre" type="text" name="nombre" :value="old('nombre')" required placeholder="Ej. Programar la solución de software..."
+                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
                     </div>
 
                     <div>
-                        <x-input-label for="numHoras" value="Número de Horas" />
-                        <x-text-input id="numHoras" class="block mt-1 w-full" type="number" name="numHoras"
-                            :value="old('numHoras')" required min="1" placeholder="Ej. 180" />
+                        <label for="numHoras" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Número de Horas</label>
+                        <input id="numHoras" type="number" name="numHoras" :value="old('numHoras')" required min="1" placeholder="Ej. 180"
+                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
                     </div>
 
-                    <div class="md:col-span-3">
-                        <x-primary-button>
-                            {{ __('Guardar Competencia') }}
-                        </x-primary-button>
+                    <div class="md:col-span-3 flex justify-start pt-2">
+                        <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 flex items-center justify-center gap-2">
+                            <span>Guardar Competencia</span>
+                        </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Tabla de Registros (Sin ID) -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+            <!-- Tabla de Registros -->
+            <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-lg font-semibold text-slate-100 mb-6 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
                     Competencias Registradas
                 </h3>
 
-                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Nombre</th>
-                            <th scope="col" class="px-6 py-3 w-32">Horas</th>
-                            <th scope="col" class="px-6 py-3 w-48">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($competencias as $competencia)
-                            <tr
-                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">
-                                    {{ $competencia->nombre }}
-                                </td>
-                                <td class="px-6 py-4 text-gray-900 dark:text-white">
-                                    {{ $competencia->numHoras }} hrs
-                                </td>
-                                <td class="px-6 py-4 flex gap-2">
-                                    <button
-                                        @click="
-                                            openEditModal = true; 
-                                            editUrl = '{{ route('competencias.update', $competencia) }}'; 
-                                            editNombre = '{{ addslashes($competencia->nombre) }}';
-                                            editNumHoras = '{{ $competencia->numHoras }}';
-                                        "
-                                        class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded hover:bg-yellow-600 transition">
-                                        Editar
-                                    </button>
-
-                                    <button
-                                        @click="startDelete('{{ route('competencias.destroy', $competencia) }}', '{{ addslashes($competencia->nombre) }}')"
-                                        class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded hover:bg-red-700 transition">
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-sm text-left text-slate-300">
+                        <thead class="text-xs uppercase bg-slate-950/80 text-cyan-400 border-b border-slate-800 tracking-wider">
                             <tr>
-                                <td colspan="3" class="px-6 py-4 text-center text-gray-500">
-                                    No hay competencias registradas aún.
-                                </td>
+                                <th scope="col" class="px-6 py-4">Nombre</th>
+                                <th scope="col" class="px-6 py-4 w-32">Horas</th>
+                                <th scope="col" class="px-6 py-4 w-48 text-right">Acciones</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 bg-slate-900/30">
+                            @forelse ($competencias as $competencia)
+                                <tr class="hover:bg-slate-800/40 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-100">
+                                        {{ $competencia->nombre }}
+                                    </td>
+                                    <td class="px-6 py-4 font-mono text-slate-300">
+                                        <span class="px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700/60 text-xs text-cyan-300">
+                                            {{ $competencia->numHoras }} hrs
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 flex justify-end gap-2">
+                                        <!-- Botón Editar -->
+                                        <button
+                                            @click="
+                                                openEditModal = true; 
+                                                editUrl = '{{ route('competencias.update', $competencia) }}'; 
+                                                editNombre = '{{ addslashes($competencia->nombre) }}';
+                                                editNumHoras = '{{ $competencia->numHoras }}';
+                                            "
+                                            class="px-3 py-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20 rounded-lg text-xs font-semibold transition-all">
+                                            Editar
+                                        </button>
 
-                <div class="mt-4">
+                                        <!-- Botón Eliminar -->
+                                        <button
+                                            @click="startDelete('{{ route('competencias.destroy', $competencia) }}', '{{ addslashes($competencia->nombre) }}')"
+                                            class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 rounded-lg text-xs font-semibold transition-all">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-6 py-8 text-center text-slate-500 italic">
+                                        No hay competencias registradas aún.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6">
                     {{ $competencias->links() }}
                 </div>
             </div>
@@ -144,36 +157,41 @@
         </div>
 
         <!-- Modal Editar -->
-        <div x-show="openEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-            x-cloak>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Editar Competencia</h3>
+        <div x-show="openEditModal" 
+             class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             x-cloak>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-md w-full relative">
+                <h3 class="text-lg font-bold text-slate-100 mb-4">Editar Competencia</h3>
 
                 <form :action="editUrl" method="POST" class="space-y-4">
                     @csrf
                     @method('PUT')
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre de la
-                            Competencia</label>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nombre de la Competencia</label>
                         <input type="text" name="nombre" x-model="editNombre" required
-                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
+                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Número de
-                            Horas</label>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Número de Horas</label>
                         <input type="number" name="numHoras" x-model="editNumHoras" min="1" required
-                            class="w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md text-sm">
+                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100">
                     </div>
 
-                    <div class="flex justify-end gap-2">
+                    <div class="flex justify-end gap-3 pt-2">
                         <button type="button" @click="openEditModal = false"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
+                            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition-colors">
                             Cancelar
                         </button>
                         <button type="submit"
-                            class="px-4 py-2 bg-yellow-500 text-white rounded-md text-xs font-semibold hover:bg-yellow-600">
+                            class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition-colors">
                             Guardar Cambios
                         </button>
                     </div>
@@ -182,30 +200,37 @@
         </div>
 
         <!-- Modal Eliminar con Temporizador -->
-        <div x-show="openDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-            x-cloak>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-                <h3 class="text-lg font-bold text-red-600 dark:text-red-400 mb-2">¿Eliminar competencia?</h3>
+        <div x-show="openDeleteModal" 
+             class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             x-cloak>
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-md w-full relative">
+                <h3 class="text-lg font-bold text-rose-400 mb-2">¿Eliminar competencia?</h3>
 
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 bg-gray-100 dark:bg-gray-900 p-3 rounded text-xs italic"
+                <p class="text-xs font-medium text-slate-300 mb-5 bg-slate-950/80 border border-slate-800/80 p-3 rounded-xl italic break-words"
                     x-text="selectedNombre"></p>
 
                 <form :action="deleteUrl" method="POST">
                     @csrf
                     @method('DELETE')
 
-                    <div class="flex justify-end gap-2">
+                    <div class="flex justify-end gap-3">
                         <button type="button" @click="openDeleteModal = false; if(timer) clearInterval(timer);"
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-xs font-semibold hover:bg-gray-400">
+                            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition-colors">
                             Cancelar
                         </button>
 
                         <button type="submit" :disabled="countdown > 0"
-                            :class="countdown > 0 ? 'opacity-50 cursor-not-allowed bg-red-400' : 'bg-red-600 hover:bg-red-700'"
-                            class="px-4 py-2 text-white rounded-md text-xs font-semibold transition flex items-center gap-1">
+                            :class="countdown > 0 ? 'opacity-40 cursor-not-allowed bg-rose-900/50 text-rose-300 border border-rose-800/50' : 'bg-rose-600 hover:bg-rose-500 text-white shadow-[0_0_15px_rgba(225,29,72,0.4)]'"
+                            class="px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
                             <span>Sí, eliminar</span>
                             <template x-if="countdown > 0">
-                                <span x-text="'(' + countdown + 's)'"></span>
+                                <span x-text="'(' + countdown + 's)'" class="font-mono text-cyan-400"></span>
                             </template>
                         </button>
                     </div>
