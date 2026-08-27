@@ -177,7 +177,7 @@
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-3 border-t border-slate-800">
+        <div class="pt-4 pb-3 border-t border-slate-800 ">
             <div class="px-4">
                 <div class="font-bold text-base text-slate-100">{{ Auth::user()->name }}</div>
                 <div class="font-mono text-xs text-slate-400">{{ Auth::user()->email }}</div>
