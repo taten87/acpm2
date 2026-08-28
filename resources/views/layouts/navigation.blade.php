@@ -22,7 +22,7 @@
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')"
                             class="text-slate-300 hover:text-cyan-300 transition-colors">
-                            {{ __('Gestión de Usuarios') }}
+                            {{ __('Usuarios') }}
                         </x-nav-link>
                     @endif
 
@@ -39,7 +39,7 @@
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
                         <x-nav-link :href="route('fichas.index')" :active="request()->routeIs('fichas.index')"
                             class="text-slate-300 hover:text-cyan-300 transition-colors">
-                            {{ __('Gestión de Fichas') }}
+                            {{ __('Fichas') }}
                         </x-nav-link>
                     @endif
 
@@ -47,7 +47,7 @@
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
                         <x-nav-link :href="route('programas.index')" :active="request()->routeIs('programas.index')"
                             class="text-slate-300 hover:text-cyan-300 transition-colors">
-                            {{ __('Gestión de Programas') }}
+                            {{ __('Programas') }}
                         </x-nav-link>
                     @endif
 
@@ -63,7 +63,7 @@
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
                         <x-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.index')"
                             class="text-slate-300 hover:text-cyan-300 transition-colors">
-                            {{ __('Resultados de Aprendizaje') }}
+                            {{ __('Resultados') }}
                         </x-nav-link>
                     @endif
                 </div>

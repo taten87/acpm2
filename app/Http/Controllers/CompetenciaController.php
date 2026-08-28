@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Competencia;
 use Illuminate\Http\Request;
-
 class CompetenciaController extends Controller
 {
     public function index()
@@ -12,7 +9,6 @@ class CompetenciaController extends Controller
         $competencias = Competencia::orderBy('idCompetencia', 'desc')->paginate(10);
         return view('competencias.index', compact('competencias'));
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -25,15 +21,12 @@ class CompetenciaController extends Controller
             'numHoras.integer' => 'El número de horas debe ser un valor entero.',
             'numHoras.min' => 'El número de horas debe ser mayor a 0.',
         ]);
-
         Competencia::create([
             'nombre' => $request->nombre,
             'numHoras' => $request->numHoras,
         ]);
-
         return redirect()->route('competencias.index')->with('status', 'Competencia registrada correctamente.');
     }
-
     public function update(Request $request, Competencia $competencia)
     {
         $request->validate([
@@ -43,19 +36,15 @@ class CompetenciaController extends Controller
             'nombre.required' => 'El nombre de la competencia es obligatorio.',
             'numHoras.required' => 'El número de horas es obligatorio.',
         ]);
-
         $competencia->update([
             'nombre' => $request->nombre,
             'numHoras' => $request->numHoras,
         ]);
-
         return redirect()->route('competencias.index')->with('status', 'Competencia actualizada correctamente.');
     }
-
     public function destroy(Competencia $competencia)
     {
         $competencia->delete();
-
         return redirect()->route('competencias.index')->with('status', 'Competencia eliminada correctamente.');
     }
 }

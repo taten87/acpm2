@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\ResultadoAprendizaje;
 use Illuminate\Http\Request;
-
 class ResultadoAprendizajeController extends Controller
 {
     public function index()

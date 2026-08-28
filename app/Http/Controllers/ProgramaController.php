@@ -1,11 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Programa;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-
 class ProgramaController extends Controller
 {
     public function index()
@@ -13,7 +9,6 @@ class ProgramaController extends Controller
         $programas = Programa::orderBy('codPrograma', 'desc')->paginate(10);
         return view('programas.index', compact('programas'));
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -23,15 +18,12 @@ class ProgramaController extends Controller
             'nombre.required' => 'El nombre del programa es obligatorio.',
             'version.required' => 'La versión del programa es obligatoria.',
         ]);
-
         Programa::create([
             'nombre' => $request->nombre,
             'version' => $request->version,
         ]);
-
         return redirect()->route('programas.index')->with('status', 'Programa guardado exitosamente.');
     }
-
     public function update(Request $request, Programa $programa)
     {
         $request->validate([
@@ -39,37 +31,28 @@ class ProgramaController extends Controller
             'version' => ['required', 'string', 'max:10'],
             'confirm_nombre' => ['required', 'string'],
         ]);
-
-        // Verificar confirmación por nombre exacto
         if (trim($request->confirm_nombre) !== trim($programa->nombre)) {
             return redirect()->back()->withErrors([
                 'confirm_nombre' => 'El nombre ingresado para confirmar no coincide con el nombre actual del programa.'
             ]);
         }
-
         $programa->update([
             'nombre' => $request->nombre,
             'version' => $request->version,
         ]);
-
         return redirect()->route('programas.index')->with('status', 'Programa actualizado correctamente.');
     }
-
     public function destroy(Request $request, Programa $programa)
     {
         $request->validate([
             'confirm_nombre' => ['required', 'string'],
         ]);
-
-        // Verificar confirmación por nombre exacto
         if (trim($request->confirm_nombre) !== trim($programa->nombre)) {
             return redirect()->back()->withErrors([
                 'confirm_nombre' => 'El nombre ingresado para confirmar no coincide con el nombre del programa.'
             ]);
         }
-
         $programa->delete();
-
         return redirect()->route('programas.index')->with('status', 'Programa eliminado correctamente.');
     }
 }
