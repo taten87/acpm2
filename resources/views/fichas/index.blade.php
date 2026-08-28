@@ -1,12 +1,16 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2
+<x-app-layout> {{-- Plantilla --}}
+
+    <x-slot name="header"> {{-- header de la página --}}
+
+        <h2 {{-- Título de la página --}}
             class="font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 leading-tight">
-            {{ __('Gestión de Fichas SENA') }}
+            {{ __('Gestión de Fichas SENA') }} {{-- Contenido del título --}}
         </h2>
+
     </x-slot>
 
-    <div class="py-12 min-h-screen bg-slate-950 text-slate-100" x-data="{
+    <div class="py-12 min-h-screen bg-slate-950 text-slate-100" 
+    x-data="{
         openDeleteModal: false,
         deleteUrl: '',
         selectedFicha: '',
@@ -47,18 +51,21 @@
             <!-- Formulario de Registro de Ficha -->
             <div
                 class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                <div
-                    class="absolute -top-12 -left-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none">
-                </div>
 
+                {{-- Creo que esto no sirve para nada --}}
+                {{-- <div 
+                    class="absolute -top-12 -left-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none">
+                </div> --}}
+
+                {{-- Título del formulario --}}
                 <h3 class="text-lg font-semibold text-slate-100 mb-6 flex items-center gap-2">
+                    {{-- Icono del formulario --}}
                     <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Registrar Nueva Ficha
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Registrar Nueva Ficha {{-- Contenido del título --}}
                 </h3>
 
+                {{-- Formulario de Registro de Ficha --}}
                 <form method="POST" action="{{ route('fichas.store') }}" class="max-w-md space-y-4">
                     @csrf
 
@@ -78,35 +85,50 @@
                             <span>Guardar Ficha</span>
                         </button>
                     </div>
+
                 </form>
+
+
             </div>
 
             <!-- Listado de Fichas Creadas -->
             <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl">
+
+                {{-- Título del listado --}}
                 <h3 class="text-lg font-semibold text-slate-100 mb-6 flex items-center gap-2">
+                    {{-- Icono del listado --}}
                     <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
-                    Fichas Registradas
+                    Fichas Registradas {{-- Contenido del título del listado --}}
                 </h3>
 
                 <div class="overflow-x-auto rounded-xl border border-slate-800">
+
                     <table class="w-full text-sm text-left text-slate-300">
-                        <thead
-                            class="text-xs uppercase bg-slate-950/80 text-cyan-400 border-b border-slate-800 tracking-wider">
+                        
+                        <thead class="text-xs uppercase bg-slate-950/80 text-cyan-400 border-b border-slate-800 tracking-wider">
+
                             <tr>
                                 <th scope="col" class="px-6 py-4">Número de Ficha</th>
                                 <th scope="col" class="px-6 py-4 text-right">Acciones</th>
                             </tr>
+
                         </thead>
+
                         <tbody class="divide-y divide-slate-800/60 bg-slate-900/30">
+
                             @forelse ($fichas as $ficha)
+
                                 <tr class="hover:bg-slate-800/40 transition-colors">
+
                                     <td class="px-6 py-4 font-mono font-medium text-slate-100">
                                         {{ $ficha->numFicha }}
                                     </td>
+
                                     <td class="px-6 py-4 flex justify-end gap-2">
+
                                         <!-- Botón Editar -->
                                         <button
                                             @click="
@@ -129,17 +151,27 @@
                                             class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 rounded-lg text-xs font-semibold transition-all">
                                             Eliminar
                                         </button>
+
                                     </td>
+
                                 </tr>
+
                             @empty
+
                                 <tr>
+
                                     <td colspan="2" class="px-6 py-8 text-center text-slate-500 italic">
                                         No hay fichas registradas aún.
                                     </td>
+
                                 </tr>
+
                             @endforelse
+
                         </tbody>
+
                     </table>
+
                 </div>
 
                 <div class="mt-6">

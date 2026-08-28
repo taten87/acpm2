@@ -41,7 +41,7 @@ class DetalleProgramacion extends Model
         'codPrograma',
         'idCompetencia',
         'idResultadoAprendizaje',
-        'idActividadProyecto',
+        'actividad_aprendizaje',
         'horas',
         'fechaInicio',
         'fechaFin',
@@ -69,8 +69,8 @@ class DetalleProgramacion extends Model
         return $this->belongsTo(ResultadoAprendizaje::class, 'idResultadoAprendizaje');
     }
 
-    public function actividadProyecto()
+    /* public function actividadProyecto()
     {
         return $this->belongsTo(ActividadProyecto::class, 'idActividadProyecto');
-    }
+    } */
 }

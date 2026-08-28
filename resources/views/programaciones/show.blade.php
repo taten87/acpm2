@@ -90,7 +90,7 @@
                         <tr class="border-b border-slate-800">
                             <th rowspan="2" class="p-3 border-r border-slate-800/60">Ficha</th>
                             <th rowspan="2" class="p-3 border-r border-slate-800/60">Programa</th>
-                            <th rowspan="2" class="p-3 border-r border-slate-800/60">Actividad de Proyecto</th>
+                            <th rowspan="2" class="p-3 border-r border-slate-800/60">Actividad de Aprendizaje</th>
                             <th rowspan="2" class="p-3 border-r border-slate-800/60">Competencia</th>
                             <th rowspan="2" class="p-3 border-r border-slate-800/60">Resultado</th>
                             <th rowspan="2" class="p-3 border-r border-slate-800/60">Horas</th>
@@ -112,7 +112,7 @@
                                     {{ $d->programa->nombre ?? $d->codPrograma }}
                                 </td>
                                 <td class="p-3 border-r border-slate-800/60 text-left text-slate-400">
-                                    {{ Str::limit($d->actividadProyecto->descripcion ?? '', 35) }}
+                                    {{ Str::limit($d->actividad_aprendizaje ?? '', 35) }}
                                 </td>
                                 <td class="p-3 border-r border-slate-800/60 text-left text-slate-400">
                                     {{ Str::limit($d->competencia->nombre ?? '', 30) }}
@@ -188,7 +188,7 @@
                     <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Añadir Actividad a la Ficha
+                    Añadir Actividad a la Fichaa
                 </h3>
 
                 <form
@@ -249,15 +249,11 @@
 
                     <div class="md:col-span-2">
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Actividad de
-                            Proyecto</label>
-                        <select name="idActividadProyecto" required
-                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
-                            <option value="" class="bg-slate-900 text-slate-500">Seleccionar Actividad</option>
-                            @foreach ($actividades as $a)
-                                <option value="{{ $a->idActividadProyecto }}" class="bg-slate-900 text-slate-100">
-                                    {{ $a->descripcion }}</option>
-                            @endforeach
-                        </select>
+                            Aprendizaje</label>
+                        <textarea name="actividad_aprendizaje" id="actividad_aprendizaje" rows="3" maxlength="700"
+                            class="form-control rounded-md border-gray-300 shadow-sm"
+                            placeholder="Ingrese la actividad de aprendizaje (máximo 700 caracteres)..." required>{{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}</textarea>
+                        <small class="text-muted">Máximo 700 caracteres.</small>
                     </div>
 
                     <div>
@@ -364,14 +360,13 @@
 
                     <div class="md:col-span-2">
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Actividad de
-                            Proyecto</label>
-                        <select name="idActividadProyecto" x-model="editData.idActividadProyecto" required
-                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
-                            @foreach ($actividades as $a)
-                                <option value="{{ $a->idActividadProyecto }}" class="bg-slate-900 text-slate-100">
-                                    {{ $a->descripcion }}</option>
-                            @endforeach
-                        </select>
+                            Aprendizaje</label>
+                        <textarea name="actividad_aprendizaje" id="actividad_aprendizaje" rows="3" maxlength="700"
+                            class="form-control rounded-md border-gray-300 shadow-sm"
+                            value="{{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}" 
+                            required>
+                            {{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}</textarea>
+                        <small class="text-muted">Máximo 700 caracteres.</small>
                     </div>
 
                     <div>

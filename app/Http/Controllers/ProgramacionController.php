@@ -7,7 +7,6 @@ use App\Models\DetalleProgramacion;
 use App\Models\Programa;
 use App\Models\Competencia;
 use App\Models\ResultadoAprendizaje;
-use App\Models\ActividadProyecto;
 use App\Models\Ficha;
 use Illuminate\Http\Request;
 
@@ -88,22 +87,20 @@ class ProgramacionController extends Controller
             'detalles.programa',
             'detalles.competencia',
             'detalles.resultadoAprendizaje',
-            'detalles.actividadProyecto'
+            /* 'detalles.actividadProyecto' */
         ]);
 
         $fichas = Ficha::all();
         $programas = Programa::all();
         $competencias = Competencia::all();
         $resultados = ResultadoAprendizaje::all();
-        $actividades = ActividadProyecto::all();
 
         return view('programaciones.show', compact(
             'programacion',
             'fichas',
             'programas',
             'competencias',
-            'resultados',
-            'actividades'
+            'resultados'
         ));
     }
 
@@ -117,7 +114,7 @@ class ProgramacionController extends Controller
             'codPrograma' => 'required',
             'idCompetencia' => 'required',
             'idResultadoAprendizaje' => 'required',
-            'idActividadProyecto' => 'required',
+            'actividad_aprendizaje' => 'required|string|max:700',
             'horas' => 'required|numeric|min:1',
             'fechaInicio' => 'required|date',
             'fechaFin' => 'required|date',
@@ -138,7 +135,7 @@ class ProgramacionController extends Controller
             'codPrograma' => 'required',
             'idCompetencia' => 'required',
             'idResultadoAprendizaje' => 'required',
-            'idActividadProyecto' => 'required',
+            'actividad_aprendizaje' => 'required|string|max:700',
             'horas' => 'required|numeric|min:1',
             'fechaInicio' => 'required|date',
             'fechaFin' => 'required|date',

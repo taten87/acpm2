@@ -6,7 +6,8 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="transition-transform hover:scale-105">
-                        <x-application-logo class="block h-9 w-auto fill-current text-cyan-400 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
+                        <x-application-logo
+                            class="block h-9 w-auto fill-current text-cyan-400 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]" />
                     </a>
                 </div>
 
@@ -17,12 +18,6 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS PROGRAMACIONES MENSUALES --}}
-                    <x-nav-link :href="route('programaciones.index')" :active="request()->routeIs('programaciones.index')"
-                        class="text-slate-300 hover:text-cyan-300 transition-colors">
-                        {{ __('Programaciones') }}
-                    </x-nav-link>
-
                     {{-- ESTO ES EL BTN PARA EL LISTADO DE LOS USUARIOS --}}
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')"
@@ -30,6 +25,15 @@
                             {{ __('Gestión de Usuarios') }}
                         </x-nav-link>
                     @endif
+
+                    {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS PROGRAMACIONES MENSUALES --}}
+                    <x-nav-link :href="route('programaciones.index')"
+                        :active="request()->routeIs('programaciones.index')"
+                        class="text-slate-300 hover:text-cyan-300 transition-colors">
+                        {{ __('Programaciones') }}
+                    </x-nav-link>
+
+
 
                     {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS FICHAS --}}
                     @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
@@ -62,14 +66,6 @@
                             {{ __('Resultados de Aprendizaje') }}
                         </x-nav-link>
                     @endif
-
-                    {{-- ESTO ES EL BTN PARA EL LISTADO DE LAS ACTIVIDADES DE PROYECTO --}}
-                    @if (in_array(auth()->user()->role, ['Coordinador Académico', 'Coordinador Administrativo']))
-                        <x-nav-link :href="route('actividades.index')" :active="request()->routeIs('actividades.index')"
-                            class="text-slate-300 hover:text-cyan-300 transition-colors">
-                            {{ __('Actividades de Proyecto') }}
-                        </x-nav-link>
-                    @endif
                 </div>
             </div>
 
@@ -93,8 +89,10 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="bg-slate-900/95 border border-slate-800 rounded-xl backdrop-blur-xl shadow-2xl py-1">
-                            <x-dropdown-link :href="route('profile.edit')" class="text-slate-300 hover:bg-slate-800/60 hover:text-cyan-300">
+                        <div
+                            class="bg-slate-900/95 border border-slate-800 rounded-xl backdrop-blur-xl shadow-2xl py-1">
+                            <x-dropdown-link :href="route('profile.edit')"
+                                class="text-slate-300 hover:bg-slate-800/60 hover:text-cyan-300">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 
@@ -103,8 +101,7 @@
                                 @csrf
 
                                 <x-dropdown-link :href="route('logout')"
-                                    class="text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
-                                    onclick="event.preventDefault();
+                                    class="text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
@@ -131,15 +128,16 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-slate-950/90 border-b border-slate-800 backdrop-blur-2xl">
+    <div :class="{ 'block': open, 'hidden': !open }"
+        class="hidden sm:hidden bg-slate-950/90 border-b border-slate-800 backdrop-blur-2xl">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')"
                 class="text-slate-300 hover:text-cyan-300">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('programaciones.index')" :active="request()->routeIs('programaciones.index')"
-                class="text-slate-300 hover:text-cyan-300">
+            <x-responsive-nav-link :href="route('programaciones.index')"
+                :active="request()->routeIs('programaciones.index')" class="text-slate-300 hover:text-cyan-300">
                 {{ __('Programaciones') }}
             </x-responsive-nav-link>
 
@@ -159,19 +157,14 @@
                     {{ __('Gestión de Programas') }}
                 </x-responsive-nav-link>
 
-                <x-responsive-nav-link :href="route('competencias.index')" :active="request()->routeIs('competencias.index')"
-                    class="text-slate-300 hover:text-cyan-300">
+                <x-responsive-nav-link :href="route('competencias.index')"
+                    :active="request()->routeIs('competencias.index')" class="text-slate-300 hover:text-cyan-300">
                     {{ __('Competencias') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.index')"
                     class="text-slate-300 hover:text-cyan-300">
                     {{ __('Resultados de Aprendizaje') }}
-                </x-responsive-nav-link>
-
-                <x-responsive-nav-link :href="route('actividades.index')" :active="request()->routeIs('actividades.index')"
-                    class="text-slate-300 hover:text-cyan-300">
-                    {{ __('Actividades de Proyecto') }}
                 </x-responsive-nav-link>
             @endif
         </div>
@@ -192,9 +185,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                        class="text-rose-400 hover:text-rose-300"
-                        onclick="event.preventDefault();
+                    <x-responsive-nav-link :href="route('logout')" class="text-rose-400 hover:text-rose-300" onclick="event.preventDefault();
                                     this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

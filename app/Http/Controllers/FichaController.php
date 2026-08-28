@@ -16,21 +16,23 @@ class FichaController extends Controller
         return view('fichas.index', compact('fichas'));
     }
 
+
     // Procesa el guardado de una nueva ficha
-    public function store(Request $request)
+    public function store(Request $request) // Request y $request: esto es un objeto de laravel el cual permite capturar los datos que vienen de formularios 
     {
-        $request->validate([
-            'numFicha' => ['required', 'numeric', 'integer', 'unique:ficha,numFicha'],
-        ], [
+        // Mensajes personalizados en español
+        $request->validate(['numFicha' => ['required', 'numeric', 'integer', 'unique:ficha,numFicha'],], [
             'numFicha.required' => 'El número de ficha es obligatorio.',
             'numFicha.numeric' => 'El número de ficha debe ser numérico.',
             'numFicha.unique' => 'Esta ficha ya se encuentra registrada en el sistema.',
         ]);
 
+        // Esto es lo que permite guardar en la base de datos
         Ficha::create([
             'numFicha' => $request->numFicha,
         ]);
 
+        // Redirige de nuevo a la vista del listado de las fichas
         return redirect()->route('fichas.index')->with('status', 'Ficha guardada exitosamente.');
     }
 
