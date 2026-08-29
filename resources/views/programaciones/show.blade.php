@@ -314,17 +314,27 @@
                     {{-- FIN - SELECCIÓN DE COMPETENCIA --}}
 
                     {{-- SELECCIÓN DE RESULTADO DE APRENDIZAJE --}}
-                    <div>
+                    <div x-data="{ horasResultado: '' }">
+                        
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Resultado de Aprendizaje</label>
-                        <select name="idResultadoAprendizaje" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
-                            
+                        
+                        <select name="idResultadoAprendizaje" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all"
+                            @change="horasResultado = $event.target.options[$event.target.selectedIndex].dataset.horas || ''">
+
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Resultado</option>
                             
                             @foreach ($resultados as $r)
-                                <option value="{{ $r->idResultadoAprendizaje }}" class="bg-slate-900 text-slate-100">{{ $r->nombre }}</option>
+                                <option value="{{ $r->idResultadoAprendizaje }}" data-horas="{{ $r->horas }}" class="bg-slate-900 text-slate-100">{{ $r->nombre }}</option>
                             @endforeach
 
                         </select>
+
+                        {{-- Lugar donde se muestran las horas de las competencias --}}
+                        <div x-show="horasResultado">
+                            <p>Horas totales del Resultado:</p>
+                            <p class="text-sm font-medium text-slate-300" x-text="horasResultado"></p>
+                        </div>
+
                     </div>
                     {{-- FIN - SELECCIÓN DE RESULTADO DE APRENDIZAJE --}}
 
