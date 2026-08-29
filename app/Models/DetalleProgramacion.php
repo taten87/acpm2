@@ -19,7 +19,7 @@ class DetalleProgramacion extends Model
     ];
     public function programacion()
     {
-        return $this->belongsTo(Programacion::class, 'idProgramacion');
+        return $this->belongsTo(Programacion::class, 'idProgramacion', 'id');
     }
     public function programa()
     {
@@ -27,10 +27,10 @@ class DetalleProgramacion extends Model
     }
     public function competencia()
     {
-        return $this->belongsTo(Competencia::class, 'idCompetencia');
+        return $this->belongsTo(Competencia::class, 'idCompetencia', 'idCompetencia');
     }
     public function resultadoAprendizaje()
     {
-        return $this->belongsTo(ResultadoAprendizaje::class, 'idResultadoAprendizaje');
+        return $this->belongsTo(ResultadoAprendizaje::class, 'idResultadoAprendizaje','idResultadoAprendizaje');
     }
 }

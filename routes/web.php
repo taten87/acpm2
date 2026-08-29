@@ -30,9 +30,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('detalles/{detalle}', [ProgramacionController::class, 'updateDetalle'])->name('update');
         Route::delete('detalles/{detalle}', [ProgramacionController::class, 'destroyDetalle'])->name('destroy');
     });
-    Route::resource('programaciones-mensuales', ProgramacionMensualController::class)
-        ->names('programaciones-mensuales')
-        ->only(['index', 'store', 'update', 'destroy']);
 });
 Route::middleware(['auth', 'can.create.users'])->group(function () {
     Route::resource('fichas', FichaController::class)->only(['index', 'store', 'update', 'destroy']);

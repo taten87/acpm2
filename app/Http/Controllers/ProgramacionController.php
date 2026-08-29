@@ -19,7 +19,6 @@ class ProgramacionController extends Controller
     {
         $user = auth()->user();
         $esCoordinador = in_array($user->role, ['Coordinador Académico', 'Coordinador Administrativo']);
-
         if ($esCoordinador) {
             $programaciones = Programacion::with('user')
                 ->orderBy('created_at', 'desc')
@@ -29,7 +28,6 @@ class ProgramacionController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
-
         return view('programaciones.index', compact('programaciones'));
     }
     public function store(Request $request)

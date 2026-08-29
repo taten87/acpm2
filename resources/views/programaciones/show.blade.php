@@ -1,27 +1,37 @@
 <x-app-layout>
+
     <x-slot name="header">
+
         <div class="flex justify-between items-center">
+
             <h2
                 class="font-bold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 leading-tight flex items-center gap-2">
                 <span>{{ __('Ficha de Programación Mensual') }}</span>
                 <span class="text-slate-600 font-normal">-</span>
                 <span class="uppercase text-cyan-400">{{ $programacion->mes_anio }}</span>
+
             </h2>
+
             <a href="{{ route('programaciones.index') }}"
                 class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold rounded-xl border border-slate-700/60 transition-all flex items-center gap-1.5 shadow-sm">
+
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
+
                 <span>Volver al Listado</span>
+
             </a>
+
         </div>
+
     </x-slot>
 
-    <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 min-h-screen text-slate-100"
-        x-data="{
+    <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 min-h-screen text-slate-100" x-data="{
             openCreateModal: false,
             openEditModal: false,
+            editActi: '', {{-- Este es --}}
             editUrl: '',
             editData: {}
         }">
@@ -73,7 +83,9 @@
                 </svg>
                 Actividades Planeadas
             </h3>
-            <button @click="openCreateModal = true"
+            <button @click="
+            openCreateModal = true
+            "
                 class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-xs rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 flex items-center gap-1.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -131,13 +143,18 @@
                                 </td>
                                 <td class="p-3">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button
-                                            @click="editUrl = '{{ route('programaciones.detalles.update', $d) }}'; editData = {{ json_encode($d) }}; openEditModal = true;"
+                                        {{-- btn-editar --}}
+                                        <button @click="
+                                                        editUrl = '{{ route('programaciones.detalles.update', $d) }}';
+                                                        editData = {{ json_encode($d) }}; openEditModal = true;
+                                                        editActi = '{{ $d->actividad_aprendizaje }}';
+                                                        "
                                             class="px-2.5 py-1 bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-white rounded-lg border border-amber-500/20 text-[11px] font-semibold transition-all">
                                             Editar
                                         </button>
-                                        <form action="{{ route('programaciones.detalles.destroy', $d) }}"
-                                            method="POST" onsubmit="return confirm('¿Eliminar registro?');">
+
+                                        <form action="{{ route('programaciones.detalles.destroy', $d) }}" method="POST"
+                                            onsubmit="return confirm('¿Eliminar registro?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -191,8 +208,7 @@
                     Añadir Actividad a la Fichaa
                 </h3>
 
-                <form
-                    action="{{ route('programaciones.detalles.store', ['programacion' => $programacion->getKey()]) }}"
+                <form action="{{ route('programaciones.detalles.store', ['programacion' => $programacion->getKey()]) }}"
                     method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     @csrf
                     <div>
@@ -202,36 +218,55 @@
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Ficha</option>
                             @foreach ($fichas as $f)
                                 <option value="{{ $f->numFicha }}" class="bg-slate-900 text-slate-100">
-                                    {{ $f->numFicha }}</option>
+                                    {{ $f->numFicha }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label
-                            class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
                         <select name="codPrograma" required
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Programa</option>
                             @foreach ($programas as $pr)
                                 <option value="{{ $pr->codPrograma }}" class="bg-slate-900 text-slate-100">
-                                    {{ $pr->nombre }}</option>
+                                    {{ $pr->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
+                    {{-- Aquí se está haciendo el campo de las horas de la comtentencia --}}
+                    <div x-data="{ horasCompetencia: '' }">
 
-                    <div>
-                        <label
-                            class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Competencia</label>
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Competencia
+                        </label>
+
+
                         <select name="idCompetencia" required
+                            @change="
+                                horasCompetencia = $event.target.options[$event.target.selectedIndex].dataset.horas || ''"
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Competencia
                             </option>
+
                             @foreach ($competencias as $c)
-                                <option value="{{ $c->idCompetencia }}" class="bg-slate-900 text-slate-100">
-                                    {{ $c->nombre }}</option>
+
+                                <option value="{{ $c->idCompetencia }}" data-horas="{{ $c->numHoras }}"
+                                    class="bg-slate-900 text-slate-100">
+                                    {{ $c->nombre }}
+                                </option>
+
                             @endforeach
+
                         </select>
+
+                        <div x-show="horasCompetencia">
+                            <p>Horas totales de la competencia:</p>
+                            <p class="text-sm font-medium text-slate-300" x-text="horasCompetencia"></p>
+                        </div>
+
                     </div>
 
                     <div>
@@ -242,7 +277,8 @@
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Resultado</option>
                             @foreach ($resultados as $r)
                                 <option value="{{ $r->idResultadoAprendizaje }}" class="bg-slate-900 text-slate-100">
-                                    {{ $r->nombre }}</option>
+                                    {{ $r->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -251,8 +287,8 @@
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Actividad de
                             Aprendizaje</label>
                         <textarea name="actividad_aprendizaje" id="actividad_aprendizaje" rows="3" maxlength="700"
-                            class="form-control rounded-md border-gray-300 shadow-sm"
-                            placeholder="Ingrese la actividad de aprendizaje (máximo 700 caracteres)..." required>{{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}</textarea>
+                            class="form-control rounded-md border-gray-300 shadow-sm bg-white text-black"
+                            required></textarea>
                         <small class="text-muted">Máximo 700 caracteres.</small>
                     </div>
 
@@ -317,19 +353,20 @@
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
                             @foreach ($fichas as $f)
                                 <option value="{{ $f->numFicha }}" class="bg-slate-900 text-slate-100">
-                                    {{ $f->numFicha }}</option>
+                                    {{ $f->numFicha }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
 
                     <div>
-                        <label
-                            class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
                         <select name="codPrograma" x-model="editData.codPrograma" required
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
                             @foreach ($programas as $pr)
                                 <option value="{{ $pr->codPrograma }}" class="bg-slate-900 text-slate-100">
-                                    {{ $pr->nombre }}</option>
+                                    {{ $pr->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -341,7 +378,8 @@
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
                             @foreach ($competencias as $c)
                                 <option value="{{ $c->idCompetencia }}" class="bg-slate-900 text-slate-100">
-                                    {{ $c->nombre }}</option>
+                                    {{ $c->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -353,7 +391,8 @@
                             class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
                             @foreach ($resultados as $r)
                                 <option value="{{ $r->idResultadoAprendizaje }}" class="bg-slate-900 text-slate-100">
-                                    {{ $r->nombre }}</option>
+                                    {{ $r->nombre }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -361,11 +400,10 @@
                     <div class="md:col-span-2">
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Actividad de
                             Aprendizaje</label>
-                        <textarea name="actividad_aprendizaje" id="actividad_aprendizaje" rows="3" maxlength="700"
-                            class="form-control rounded-md border-gray-300 shadow-sm"
-                            value="{{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}" 
-                            required>
-                            {{ old('actividad_aprendizaje', $detalle->actividad_aprendizaje ?? '') }}</textarea>
+                        <textarea name="actividad_aprendizaje" id="actividad_aprendizaje" x-model="editActi" rows="3"
+                            maxlength="700"
+                            class="form-control rounded-md border-gray-300 shadow-sm bg-white text-black" required>
+                        </textarea>
                         <small class="text-muted">Máximo 700 caracteres.</small>
                     </div>
 

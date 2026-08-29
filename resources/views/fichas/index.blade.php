@@ -10,7 +10,7 @@
     </x-slot>
 
     <div class="py-12 min-h-screen bg-slate-950 text-slate-100" 
-    x-data="{
+        x-data="{
         openDeleteModal: false,
         deleteUrl: '',
         selectedFicha: '',
@@ -18,7 +18,7 @@
         editUrl: '',
         editNumFicha: '',
         currentNumFicha: ''
-    }">
+        }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Mensaje de confirmación de éxito -->

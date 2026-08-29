@@ -19,8 +19,4 @@ class Programacion extends Model
     {
         return $this->belongsTo(User::class, 'idUsuario');
     }
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'idUsuario');
-    }
 }
