@@ -236,7 +236,7 @@
                             @endforeach
                         </select>
                     </div>
-                    {{-- Aquí se está haciendo el campo de las horas de la comtentencia --}}
+                        {{-- Campo de las horas de la comtentencia --}}
                     <div x-data="{ horasCompetencia: '' }">
 
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Competencia

@@ -11,5 +11,6 @@ class ResultadoAprendizaje extends Model
     public $timestamps = false;
     protected $fillable = [
         'nombre',
+        'horas',
     ];
 }
