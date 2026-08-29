@@ -14,13 +14,17 @@ class ResultadoAprendizajeController extends Controller
     {
         $request->validate([
             'nombre' => ['required', 'string', 'max:200'],
+            'horas' => ['required', 'integer', 'min:1'],
         ], [
             'nombre.required' => 'El nombre del resultado de aprendizaje es obligatorio.',
             'nombre.max' => 'El nombre no debe superar los 200 caracteres.',
+            'horas.required' => 'El número de horas es obligatorio',
+            'nombre.min' => 'El número de horas debe ser mayor a 0 (Cero)',
         ]);
 
         ResultadoAprendizaje::create([
             'nombre' => $request->nombre,
+            'horas' => $request->horas,
         ]);
 
         return redirect()->route('resultados.index')->with('status', 'Resultado de aprendizaje guardado exitosamente.');
