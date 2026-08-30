@@ -241,7 +241,7 @@
 
         <!-- MODAL AGREGAR REGISTRO -->
         <div x-show="openCreateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4" x-cloak>
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full space-y-4 relative overflow-hidden">
+            <div x-data="{ codProgramaSelected: '' }" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full space-y-4 relative overflow-hidden">
 
                 {{-- TODO: Mirar si esto está haciendo algo o lo quitamos --}}
                 {{-- <div class="absolute -top-10 -left-10 w-28 h-28 bg-cyan-500/10 rounded-full blur-xl pointer-events-none"></div> --}}
@@ -258,12 +258,13 @@
                     <div>
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Ficha</label>
 
-                        <select name="numFicha" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        <select name="numFicha" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all"
+                        @change="codProgramaSelected = $event.target.options[$event.target.selectedIndex].dataset.programa || ''">
                             
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Ficha</option>
 
                             @foreach ($fichas as $f)
-                                <option value="{{ $f->numFicha }}" class="bg-slate-900 text-slate-100">{{ $f->numFicha }}</option>
+                                <option value="{{ $f->numFicha }}" data-programa="{{ $f->codPrograma }}" class="bg-slate-900 text-slate-100">{{ $f->numFicha }}</option>
                             @endforeach
 
                         </select>
@@ -275,9 +276,11 @@
 
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
 
-                        <select name="codPrograma" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        <select tabindex="-1" name="codPrograma" id="codPrograma" x-model="codProgramaSelected" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all 
+                        pointer-events-none opacity-75 select-none focus:outline-none">
                             
                             <option value="" class="bg-slate-900 text-slate-500">Seleccionar Programa</option>
+                            
                             @foreach ($programas as $pr)
                                 <option value="{{ $pr->codPrograma }}" class="bg-slate-900 text-slate-100">{{ $pr->nombre }}</option>
                             @endforeach
@@ -380,7 +383,7 @@
 
         {{-- MODAL EDITAR REGISTRO --}}
         <div x-show="openEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4" x-cloak>
-            <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full space-y-4 relative overflow-hidden">
+            <div x-data="{ codProgramaSelected: '' }" class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-2xl w-full space-y-4 relative overflow-hidden">
 
                 {{-- TODO: Mirar si esto sive para algo o lo quitamos --}}
                 {{-- <div class="absolute -top-10 -left-10 w-28 h-28 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>--}} {{--  --}}
@@ -405,9 +408,11 @@
 
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Ficha</label>
 
-                        <select name="numFicha" x-model="editData.numFicha" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        <select name="numFicha" x-model="editData.numFicha" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all"
+                        @change="editData.codPrograma = String($event.target.options[$event.target.selectedIndex].dataset.programa || '')">
+
                             @foreach ($fichas as $f)
-                                <option value="{{ $f->numFicha }}" class="bg-slate-900 text-slate-100">{{ $f->numFicha }}</option>
+                                <option value="{{ $f->numFicha }}" data-programa="{{ $f->codPrograma }}" class="bg-slate-900 text-slate-100">{{ $f->numFicha }}</option>
                             @endforeach
                         </select>
 
@@ -419,7 +424,7 @@
                     <div>
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
 
-                        <select name="codPrograma" x-model="editData.codPrograma" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        <select name="codPrograma" x-model="editData.codPrograma" required tabindex="-1" class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all pointer-events-none opacity-75 select-none focus:outline-none">
                             
                             @foreach ($programas as $pr)
                                 <option value="{{ $pr->codPrograma }}" class="bg-slate-900 text-slate-100">
