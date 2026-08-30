@@ -433,28 +433,49 @@
                     {{-- FIN - EDITAR PROGRAMA --}}
 
                     {{-- EDITAR COMPETENECIA --}}
-                    <div>
+                    <div x-data="{ horasCompetencia: '' }">
+
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Competencia</label>
-                        <select name="idCompetencia" x-model="editData.idCompetencia" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        
+                        <select name="idCompetencia" x-model="editData.idCompetencia" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all"
+                        @change="horasCompetencia = $event.target.options[$event.target.selectedIndex].dataset.horas || ''">
                             
                             @foreach ($competencias as $c)
-                                <option value="{{ $c->idCompetencia }}" class="bg-slate-900 text-slate-100">{{ $c->nombre }}</option>
+                                <option value="{{ $c->idCompetencia }}" data-horas="{{ $c->numHoras }}" class="bg-slate-900 text-slate-100">{{ $c->nombre }}</option>
                             @endforeach
 
                         </select>
+
+                        {{-- Lugar donde se muestran las horas de las competencias --}}
+                        <div x-show="horasCompetencia">
+                            <p>Horas totales de la competencia:</p>
+                            <p class="text-sm font-medium text-slate-300" x-text="horasCompetencia"></p>
+                        </div>
+
+
                     </div>
                     {{-- FIN - EDITAR COMPETENECIA --}}
 
                     {{-- EDITAR RESULTADO DE APRENDIZAJE --}}
-                    <div>
+                    <div x-data="{ horasResultado: '' }">
+                        
                         <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Resultado de Aprendizaje</label>
-                        <select name="idResultadoAprendizaje" x-model="editData.idResultadoAprendizaje" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                        
+                        <select name="idResultadoAprendizaje" x-model="editData.idResultadoAprendizaje" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 rounded-xl px-3 py-2 text-slate-100 transition-all"
+                        @change="horasResultado = $event.target.options[$event.target.selectedIndex].dataset.horas || ''">
                             
                             @foreach ($resultados as $r)
-                                <option value="{{ $r->idResultadoAprendizaje }}" class="bg-slate-900 text-slate-100">{{ $r->nombre }}</option>
+                                <option value="{{ $r->idResultadoAprendizaje }}" data-horas="{{ $r->horas }}" class="bg-slate-900 text-slate-100">{{ $r->nombre }}</option>
                             @endforeach
 
                         </select>
+
+                        {{-- Lugar donde se muestran las horas de las competencias --}}
+                        <div x-show="horasResultado">
+                            <p>Horas totales del Resultado:</p>
+                            <p class="text-sm font-medium text-slate-300" x-text="horasResultado"></p>
+                        </div>
+                        
                     </div>
                     {{-- FIN - EDITAR RESULTADO DE APRENDIZAJE --}}
 

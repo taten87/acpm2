@@ -74,7 +74,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Registrar Nuevo Resultado de Aprendizaje
+                    Registrar Nuevo
                 </h3>
 
                 {{-- FORMULARIO DE REGISTRO "RESULTADOS" --}}
@@ -82,12 +82,12 @@
                     @csrf
 
                     <div>
-                        <label for="nombre" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nombre del Resultado de Aprendizaje</label>
+                        <label for="nombre" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Resultado de Aprendizaje</label>
                         <input id="nombre" type="text" name="nombre" :value="old('nombre')" required placeholder="Alcanzar los objetivos propuestos..." class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
                     </div>
 
                     <div>
-                        <label for="horas" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Horas Del Resultado</label>
+                        <label for="horas" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Horas Correspondientes</label>
                         <input id="horas" type="number" name="horas" :value="old('horas')" required placeholder="20" class="bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
                     </div>
 
