@@ -70,18 +70,28 @@
                     @csrf
 
                     <div>
-                        <label for="numFicha"
-                            class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Número de
-                            Ficha</label>
-                        <input id="numFicha" type="number" name="numFicha" :value="old('numFicha')" required
-                            placeholder="Ej. 2670123"
-                            class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
+                        <label for="numFicha" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Número de Ficha</label>
+                        <input id="numFicha" type="number" name="numFicha" :value="old('numFicha')" required placeholder="Ej. 2670123" class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all">
                         <x-input-error :messages="$errors->get('numFicha')" class="mt-2 text-xs text-rose-400" />
                     </div>
 
                     <div>
-                        <button type="submit"
-                            class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 flex items-center justify-center gap-2">
+
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Programa</label>
+
+                        <select name="codPrograma" required class="w-full bg-slate-950/60 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl px-3 py-2 text-slate-100 transition-all">
+                            
+                            <option value="" class="bg-slate-900 text-slate-500">Seleccionar Programa</option>
+                            @foreach ($programas as $pr)
+                                <option value="{{ $pr->codPrograma }}" class="bg-slate-900 text-slate-100">{{ $pr->nombre }}</option>
+                            @endforeach
+
+                        </select>
+                        
+                    </div>
+
+                    <div>
+                        <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-medium text-sm rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300 flex items-center justify-center gap-2">
                             <span>Guardar Ficha</span>
                         </button>
                     </div>

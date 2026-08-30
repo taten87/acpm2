@@ -10,6 +10,12 @@ class Ficha extends Model
     public $incrementing = false; 
     public $timestamps = false; 
     protected $fillable = [
-        'numFicha'
+        'numFicha',
+        'codPrograma'
     ]; 
+
+    public function relFichaPrograma()
+    {
+        return $this->belongsTo(Programa::class, 'codPrograma', 'codPrograma');
+    }
 }

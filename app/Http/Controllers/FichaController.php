@@ -1,25 +1,45 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Ficha;
+use App\Models\Programa; // Controlador de programa
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 class FichaController extends Controller
 {
     public function index()
     {
+        $fichas = Ficha::with('relFichaPrograma')->get();
+        $programas = Programa::all();
+
         $fichas = Ficha::orderBy('numFicha', 'desc')->paginate(10);
-        return view('fichas.index', compact('fichas'));
+        return view('fichas.index', compact('fichas', 'programas'));
     }
     public function store(Request $request)
     {
-        $request->validate(['numFicha' => ['required', 'numeric', 'integer', 'unique:ficha,numFicha', 'digits:7'],], [
+        $request->validate([
+            'numFicha' => [
+                'required', 
+                'numeric', 
+                'integer', 
+                'unique:ficha,numFicha', 
+                'digits:7'
+                ],
+            
+            'codPrograma' => [
+                'required', 
+                'exists:programa,codPrograma'
+                ],
+            ],[
             'numFicha.required' => 'El número de ficha es obligatorio.',
             'numFicha.numeric' => 'El número de ficha debe ser numérico.',
             'numFicha.unique' => 'Esta ficha ya se encuentra registrada en el sistema.',
             'numFicha.digits' => 'El número de ficha debe ser de exactamente de 7 (Siete) dígitos',
+            'codPrograma.required' => 'Debes seleccionar un programa de formación.',
+            'codPrograma.exists'   => 'El programa seleccionado no es válido.',
         ]);
         Ficha::create([
             'numFicha' => $request->numFicha,
+            'codPrograma' => $request->codPrograma,
         ]);
         return redirect()->route('fichas.index')->with('status', 'Ficha guardada exitosamente.');
     }

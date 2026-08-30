@@ -503,3 +503,40 @@
 
     </div>
 </x-app-layout>
+
+
+<div x-data="{ codProgramaSelected: '' }">
+
+    <!-- 1. SELECT DE FICHA -->
+    <div>
+        <label for="numFicha">Ficha</label>
+        
+        <select name="numFicha" id="numFicha" required @change="codProgramaSelected = $event.target.options[$event.target.selectedIndex].dataset.programa || ''">
+            
+            <option value="" disabled selected>-- Selecciona una Ficha --</option>
+            
+            @foreach ($fichas as $f)
+                {{-- Guardamos el código del programa asociado en data-programa --}}
+                <option value="{{ $f->numFicha }}" data-programa="{{ $f->codPrograma }}">{{ $f->numFicha }}</option>
+            @endforeach
+
+        </select>
+
+    </div>
+
+    <!-- 2. SELECT DE PROGRAMA (Se selecciona automáticamente) -->
+    <div>
+        <label for="codPrograma">Programa de Formación</label>
+
+        <select name="codPrograma" id="codPrograma" required x-model="codProgramaSelected">
+            
+            <option value="" disabled selected>-- Programa asignado --</option>
+            
+            @foreach ($programas as $pr)
+                <option value="{{ $pr->codPrograma }}">{{ $pr->codPrograma }} - {{ $pr->nombre }}</option>
+            @endforeach
+
+        </select>
+    </div>
+
+</div>
