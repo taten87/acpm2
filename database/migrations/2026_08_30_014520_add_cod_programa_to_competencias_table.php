@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('ficha', function (Blueprint $table) {
-            // Se usa integer() exacto para que coincida con int de MySQL
-            $table->integer('codPrograma')->nullable()->after('numFicha');
+        Schema::table('competencia', function (Blueprint $table) {
+            // Se usa integer para coincidir exactamente con el int PK de la tabla programa
+            $table->integer('codPrograma')->nullable()->after('idCompetencia');
 
             // Clave foránea hacia la tabla 'programa'
             $table->foreign('codPrograma')
@@ -22,7 +22,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('ficha', function (Blueprint $table) {
+        Schema::table('competencia', function (Blueprint $table) {
             $table->dropForeign(['codPrograma']);
             $table->dropColumn('codPrograma');
         });

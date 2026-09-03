@@ -28,6 +28,7 @@ class ProgramacionController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
+        $programas = Programa::with('competencias')->get();
         return view('programaciones.index', compact('programaciones'));
     }
     public function store(Request $request)

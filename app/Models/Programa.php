@@ -13,4 +13,14 @@ class Programa extends Model
         'nombre',
         'version',
     ];
+
+    public function competencias()
+    {
+        return $this->belongsToMany(
+            Competencia::class,
+            'competencia_programa', // Tabla pivote
+            'codPrograma',          // FK de este modelo en la pivote
+            'idCompetencia'         // FK del modelo relacionado en la pivote
+        );
+    }
 }

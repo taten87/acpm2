@@ -22,7 +22,6 @@ class ProgramacionExport implements FromView, ShouldAutoSize
     {
         $programacion = Programacion::with([
             'detalles.programa',
-            'detalles.actividadProyecto',
             'detalles.competencia',
             'detalles.resultadoAprendizaje'
         ])->findOrFail($this->programacionId);
